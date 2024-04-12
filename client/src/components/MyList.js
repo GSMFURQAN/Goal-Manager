@@ -1,0 +1,84 @@
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import moment from "moment";
+import React, { useEffect } from "react";
+import { showTime } from "../utilities/utils";
+import { fetchData, updateGoal } from "../redux/goalSlice";
+import { deleteTodo, updateTodo } from "../Apis";
+import Timer from "../utilities/Timer";
+import { useDispatch, useSelector } from "react-redux";
+import { getProgress, selectView } from "../redux/generalSlice";
+import AddGoal from "./AddGoal";
+import LinearTimer from "../utilities/LinearTimer";
+import MyCards from "./MyCards";
+
+const MyCard = () => {
+  const [open, setOpen] = React.useState(false);
+  const general = useSelector((state) => state.general);
+  const { data, loading, error } = useSelector((state) => state.goal);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchData({ dayView: general?.dayView }));
+  }, [dispatch, general.dayView]);
+
+  return (
+    <div style={{ width: "75%" }}>
+      <Stack my={2} px={4} sx={{ overflowY: "scroll", maxHeight: "400px" }}>
+        {data &&
+          data
+            .filter((x) => x.parentId == "")
+            .map((todo) => (
+              <>
+                <MyCards
+                  todo={todo}
+                  general={general}
+                  open={open}
+                  setOpen={setOpen}
+                />
+                {/* ------------------------------------------------------------------------------- */}
+                {data
+                  .filter((x) => x.parentId == todo._id)
+                  .map((z) => (
+                    <Stack
+                      display={"flex"}
+                      direction={"row"}
+                      justifyContent={"space-between"}
+                    >
+                      <Stack width={"15%"}>
+                        <Divider
+                          orientation="vertical"
+                          sx={{ borderRight: "3px solid gray" }}
+                        />
+                      </Stack>
+                      <Box
+                        border={"1px solid gray"}
+                        height={0}
+                        width={"20%"}
+                        my={"60px"}
+                      />
+                      <MyCards
+                        todo={z}
+                        general={general}
+                        open={open}
+                        setOpen={setOpen}
+                      />
+                    </Stack>
+                  ))}
+              </>
+            ))}
+      </Stack>
+      <AddGoal open={open} setOpen={setOpen} id={general.id} />
+    </div>
+  );
+};
+
+export default MyCard;
