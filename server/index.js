@@ -10,7 +10,7 @@ app.use(
   cors({
     origin: ["https://goal-manager-client.vercel.app"],
     methods: ["POST", "GET"],
-    // credentials: true,
+    credentials: true,
   })
 );
 app.use("/", Routes);
