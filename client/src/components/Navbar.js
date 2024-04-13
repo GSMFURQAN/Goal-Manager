@@ -59,6 +59,15 @@ const Navbar = () => {
     >
       Future
     </Button>{" "}
+    <Button
+    size="small"
+      variant={general.dayView === "all" ? "contained" : "outlined"}
+      onClick={() =>
+        dispatch(selectView({ ...general, dayView: "all" }))
+      }
+    >
+      All
+    </Button>{" "}
     <Box
 sx={{
  

@@ -6,11 +6,15 @@ export const getTodos = async (req, res) => {
     todos = await Todo.find({ _id: params.id });
     console.log("dsd", todos, params.id);
     Todo.insert
-  } else if (params.dayView != "undefined") {
-    let all = await Todo.find({ dayView: params.dayView });
+  } else if (params.dayView != "undefined" && params.dayView != "all") {
+    let all = await Todo.find({ dayView: params.dayView }).sort({dueDate:-1});
+    todos = all
+  } 
+  else if (params.dayView == "all") {
+    let all = await Todo.find({ done: false}).sort({dueDate:1});
     todos = all
   } else {
-    todos = await Todo.find({ dayView: "dayView" });
+    todos = await Todo.find({ dayView: "dayView" }).sort({dueDate:-1});
     console.log('dd',Todo.find())  
   }
   try {

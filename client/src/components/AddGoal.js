@@ -84,7 +84,7 @@ const [parentDate, setParentDate] = useState('')
       parentId:''
     };
     // console.log('ddd',moment( payload.dueDate).diff(parentDate, 'hours') >1)
-    if(moment( payload.dueDate).diff(parentDate, 'hours') > 1){
+    if(general.action =='subTask' && moment( payload.dueDate).diff(parentDate, 'hours') > 1){
 dispatch(selectSnack({severity:'error',message:'selcted date must be less than parent',open:true}))
     }else if (general.action == 'edit') {
       await updateTodo({ ...payload, _id: id }).then(async () => {
