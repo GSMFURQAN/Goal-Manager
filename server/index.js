@@ -8,7 +8,7 @@ Connection();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://goal-manager-client.vercel.app"],
+    origin: ["https://goal-manager-client.vercel.app","http://localhost:3000"],
     methods: ["POST", "GET","PUT","DELETE"],
     credentials: true,
   })
