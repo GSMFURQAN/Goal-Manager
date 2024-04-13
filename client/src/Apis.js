@@ -2,7 +2,7 @@ import axios from "axios"
 
 const URL = 'http://localhost:8000'
 const URLPROD = 'https://goal-manager-server.vercel.app'
-
+axios.defaults.withCredentials =true
 export const getTodos = async(params)=>{
   console.log('first',params)
     try {

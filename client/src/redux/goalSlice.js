@@ -9,6 +9,7 @@ const initialState = {
 };
 const URL = 'http://localhost:8000'
 const URLPROD = 'https://goal-manager-server.vercel.app'
+axios.defaults.withCredentials =true
 
 export const fetchData = (params) => async (dispatch) => {
   dispatch(fetchDataStart());
