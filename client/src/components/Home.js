@@ -40,9 +40,10 @@ export default function Home() {
   });
   const dispatch = useDispatch();
   let completed = progress?.data?.filter((x) => x.done === true).length;
-  let incomplete = progress?.data?.filter((x) => x.done === false).length;
+  let incomplete = progress?.data?.filter((x) => x.done === false && !x.elapsed).length;
+  let elapsed = progress?.data?.filter((x)=>x.elapsed && !x.done).length
   React.useMemo(() => {
-    setProgressData({ completed: completed, incomplete: incomplete });
+    setProgressData({ completed: completed, incomplete: incomplete, elapsed:elapsed });
   }, [progress.data]);
 
   React.useEffect(() => {

@@ -5,18 +5,22 @@ export const getTodos = async (req, res) => {
   if (params.id != "undefined") {
     todos = await Todo.find({ _id: params.id });
     console.log("dsd", todos, params.id);
-    Todo.insert
+    Todo.insert;
   } else if (params.dayView != "undefined" && params.dayView != "all") {
-    let all = await Todo.find({ dayView: params.dayView }).sort({dueDate:-1});
-    todos = all
-  } 
-  else if (params.dayView == "all") {
-    let all = await Todo.find({ done: false}).sort({dueDate:1});
-    todos = all
+    let all = await Todo.find({ dayView: params.dayView }).sort({
+      dueDate: -1,
+    });
+    todos = all;
+  } else if (params.dayView == "all") {
+    let all = await Todo.find({ done: false }).sort({ dueDate: 1 });
+    todos = all;
   } else {
-    todos = await Todo.find({ dayView: "dayView" }).sort({dueDate:-1});
-    console.log('dd',Todo.find())  
+    todos = await Todo.find({ dayView: "dayView" }).sort({ dueDate: -1 });
+    console.log("dd", Todo.find());
   }
+
+  todos = await todos.map((x) => ({ ...x._doc, elapsed: x._doc.dueDate < new Date() }));
+
   try {
     res.status(201).json(todos);
   } catch (error) {
@@ -25,24 +29,24 @@ export const getTodos = async (req, res) => {
   }
 };
 
-export const getProgress = async(req,res)=>{
+export const getProgress = async (req, res) => {
   const params = req.query;
-  console.log('pi',params)
-  
-  let progress ='';
-  if(params.dayView === 'all'){
-    progress =  await Todo.find({},{done:1})
-  }else{
-    progress =  await Todo.find({dayView:params.dayView},{done:1})
+  console.log("pi", params);
 
+  let progress = "";
+  if (params.dayView === "all") {
+    progress = await Todo.find({}, { done: 1 });
+  } else {
+    progress = await Todo.find({ dayView: params.dayView }, { done: 1, dueDate:1 });
   }
-  try{
-    res.status(201).json(progress)
-  }catch(error){
+  progress = await progress.map((x) => ({ ...x._doc, elapsed: x._doc.dueDate < new Date() }));
+
+  try {
+    res.status(201).json(progress);
+  } catch (error) {
     res.status(409).json({ message: error.message });
-
   }
-}
+};
 
 export const updateTodo = async (req, res) => {
   const todo = req.body;

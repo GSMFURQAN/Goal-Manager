@@ -7,15 +7,15 @@ const initialState = {
   loading: false,
   error: null,
 };
-const URL = 'http://localhost:8000'
-const URLPROD = 'https://goal-manager-server.vercel.app'
+const apiUrl = process.env.REACT_APP_API_URL;
+
 axios.defaults.withCredentials =true
 
 export const fetchData = (params) => async (dispatch) => {
   dispatch(fetchDataStart());
   try {
     // Perform API call here
-    const response = await axios.get(URLPROD + `/todos?dayView=${params.dayView}&id=${params.id}`)
+    const response = await axios.get(apiUrl + `/todos?dayView=${params.dayView}&id=${params.id}`)
     const data =  response.data;
     dispatch(fetchDataSuccess(data));
   } catch (error) {

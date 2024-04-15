@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-const URL = 'http://localhost:8000'
-const URLPROD = 'https://goal-manager-server.vercel.app'
+const apiUrl = process.env.REACT_APP_API_URL;
+
 axios.defaults.withCredentials =true
 
 const generalSlice = createSlice({
@@ -33,7 +33,7 @@ const snackSlice = createSlice({
 export const getProgress =(params) =>async(dispatch)=>{
   dispatch(fetchDataStart())
   try {
-    const response =  await axios.get(URLPROD + `/progress?dayView=${params.dayView}`)
+    const response =  await axios.get(apiUrl + `/progress?dayView=${params.dayView}`)
     dispatch(fetchDataSuccess(response.data))
   } catch (error) {
       console.log('Error fetching data')
