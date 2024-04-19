@@ -35,7 +35,7 @@ export const getProgress = async (req, res) => {
 
   let progress = "";
   if (params.dayView === "all") {
-    progress = await Todo.find({}, { done: 1 });
+    progress = await Todo.find({}, { done: 1, dueDate:1 });
   } else {
     progress = await Todo.find({ dayView: params.dayView }, { done: 1, dueDate:1 });
   }

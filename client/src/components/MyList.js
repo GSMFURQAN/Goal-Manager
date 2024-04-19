@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   Stack,
   TextField,
@@ -33,7 +34,11 @@ const MyCard = () => {
   return (
     <div style={{ width: "75%" }}>
       <Stack my={2} px={4} sx={{ overflowY: "scroll", maxHeight: "400px" }}>
-        {data &&
+        {!data ? (
+          <Stack m={'auto'}>
+          <CircularProgress />
+            </Stack> 
+        ) : (
           data
             .filter((x) => x.parentId == "")
             .map((todo) => (
@@ -74,7 +79,8 @@ const MyCard = () => {
                     </Stack>
                   ))}
               </>
-            ))}
+            ))
+        )}
       </Stack>
       <AddGoal open={open} setOpen={setOpen} id={general.id} />
     </div>
