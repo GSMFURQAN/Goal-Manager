@@ -61,6 +61,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
           >
             <Stack direction={"row"} display={"flex"}>
               <Checkbox
+              size="small"
                 checked={todo.done}
                 onChange={() => handleChangeDone(todo._id, todo.done)}
               />
@@ -79,7 +80,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
               <Typography
                 fontWeight={"bold"}
                 display={"inline-block"}
-                fontSize={"14px"}
+                fontSize={"12px"}
                 py={1}
               >
                 Due Date :
@@ -91,7 +92,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
 
           <Stack
             width={600}
-            mt={1}
+            mt={0.5}
             sx={{
               maxHeight: selectedId === todo._id ? "100%" : 0,
               overflow: "hidden",
@@ -101,7 +102,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
             <Typography
               fontWeight={"bold"}
               display={"inline-block"}
-              fontSize={"14px"}
+              fontSize={"12px"}
               mb={0.5}
             >
               Note : &nbsp; {todo.note}
@@ -121,7 +122,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
                 <Typography
                   fontWeight={"bold"}
                   display={"inline-block"}
-                  fontSize={"14px"}
+                  fontSize={"12px"}
                 >
                   Time Left :
                 </Typography>{" "}

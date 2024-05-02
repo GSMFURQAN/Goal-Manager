@@ -19,7 +19,8 @@ function App() {
       mode: generalState.theme ? "dark" : "light",
     },
   });
-  return (
+  console.log('ads',Array(10).map((s)=>({'s':'a'}))) 
+   return (
           // <ColorModeContext.Provider value={theme}>
 
       <ThemeProvider theme={darkTheme}>

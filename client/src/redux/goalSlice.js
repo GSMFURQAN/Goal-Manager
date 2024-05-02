@@ -13,9 +13,18 @@ axios.defaults.withCredentials =true
 
 export const fetchData = (params) => async (dispatch) => {
   dispatch(fetchDataStart());
+  console.log('daf',params)
   try {
     // Perform API call here
-    const response = await axios.get(apiUrl + `/todos?dayView=${params.dayView}&id=${params.id}`)
+    let api = apiUrl+'/todos?'
+    if(params.dayView){
+      api +=  `&dayView=${params.dayView}`
+    }if(params.id){
+      api += `&id=${params.id}`
+    }if(params.searchtxt){
+      api+=  `&searchtxt=${params.searchtxt}`
+    }
+    const response = await axios.get(api)
     const data =  response.data;
     dispatch(fetchDataSuccess(data));
   } catch (error) {

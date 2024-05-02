@@ -1,25 +1,40 @@
 import Todo from "../schema/todoListSchema.js";
+import { ObjectId } from "mongodb";
 export const getTodos = async (req, res) => {
   const params = req.query;
   let todos = "";
-  if (params.id != "undefined") {
-    todos = await Todo.find({ _id: params.id });
-    console.log("dsd", todos, params.id);
-    Todo.insert;
-  } else if (params.dayView != "undefined" && params.dayView != "all") {
-    let all = await Todo.find({ dayView: params.dayView }).sort({
-      dueDate: -1,
-    });
-    todos = all;
-  } else if (params.dayView == "all") {
-    let all = await Todo.find({ done: false }).sort({ dueDate: 1 });
-    todos = all;
-  } else {
-    todos = await Todo.find({ dayView: "dayView" }).sort({ dueDate: -1 });
-    console.log("dd", Todo.find());
+  
+  if (params.id) {
+    let all = await Todo.find({_id:params.id});
+    todos = all
+    // Todo.insert;
   }
+  // if (params.searchtxt) {
+  //   let all = await Todo.find({
+  //     title: { $regex: new RegExp(params.searchtxt, "i") },
+  //   });
+  //   todos = all;
+  // }
+  if (params.dayView) {
+    if (params.dayView == "all") {
+      let all = await Todo.find({ done: false }).sort({ dueDate: 1 });
+      todos = all;
+    } else {
+      let all = await Todo.find({ dayView: params.dayView }).sort({
+        dueDate: -1,
+      });
+      todos = all;
+    }
+  } 
+  // else {
+  //   todos = await Todo.find({ dayView: "dayView" }).sort({ dueDate: -1 });
+  //   console.log("dd", Todo.find());
+  // }
 
-  todos = await todos.map((x) => ({ ...x._doc, elapsed: x._doc.dueDate < new Date() }));
+  todos = await todos.map((x) => ({
+    ...x._doc,
+    elapsed: x._doc.dueDate < new Date(),
+  }));
 
   try {
     res.status(201).json(todos);
@@ -31,15 +46,20 @@ export const getTodos = async (req, res) => {
 
 export const getProgress = async (req, res) => {
   const params = req.query;
-  console.log("pi", params);
 
   let progress = "";
   if (params.dayView === "all") {
-    progress = await Todo.find({}, { done: 1, dueDate:1 });
+    progress = await Todo.find({}, { done: 1, dueDate: 1 });
   } else {
-    progress = await Todo.find({ dayView: params.dayView }, { done: 1, dueDate:1 });
+    progress = await Todo.find(
+      { dayView: params.dayView },
+      { done: 1, dueDate: 1 }
+    );
   }
-  progress = await progress.map((x) => ({ ...x._doc, elapsed: x._doc.dueDate < new Date() }));
+  progress = await progress.map((x) => ({
+    ...x._doc,
+    elapsed: x._doc.dueDate < new Date(),
+  }));
 
   try {
     res.status(201).json(progress);

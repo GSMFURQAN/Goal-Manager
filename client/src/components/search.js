@@ -5,19 +5,25 @@ import { Button, Checkbox, Modal, Stack, Typography } from "@mui/material";
 import { addNewTodo, deleteTodo, updateTodo } from "../Apis";
 import { useDispatch, useSelector } from "react-redux";
 import AddGoal from "./AddGoal";
+import { fetchData } from "../redux/goalSlice";
 
 export default function SearchBar({ time }) {
   const [editTodo, setEditTodo] = React.useState({ id: "", name: "" });
   const [open, setOpen] = React.useState(false);
+  const [searchtxt, setSearchtxt] = React.useState('');
   const dispatch = useDispatch();
-  const { title, note, dueDate, done } = useSelector((state) => state.goal);
+  const { data } = useSelector((state) => state.goal);
   const { dayView } = useSelector((state) => state.general);
   
 
   const handleAddNewTodo = () => {
     setOpen(true);
   };
- 
+  
+  React.useEffect(()=>{
+    dispatch(fetchData({searchtxt:searchtxt, dayView:dayView}))
+    console.log('cde',data)
+  },[searchtxt])
 
   return (
     <Stack
@@ -28,10 +34,10 @@ export default function SearchBar({ time }) {
     >
       <TextField
       size="small"
-        label="search todos"
-        value={title}
+        label="search your Goals"
+        value={searchtxt}
         sx={{ width: "72%" }}
-        onChange={(e) => {}}
+        onChange={(e) => {setSearchtxt(e.target.value)}}
       />
       <Button
         variant="contained"

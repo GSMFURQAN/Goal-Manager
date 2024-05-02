@@ -5,8 +5,14 @@ const apiUrl = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials =true
 export const getTodos = async(params)=>{
   console.log('first',params)
+  let api = apiUrl+'/todos?'
+  if(params.dayView){
+    api +=  `&dayView=${params.dayView}`
+  }if(params.id){
+    api += `&id=${params.id}`
+  }
     try {
-      return  await axios.get(apiUrl + `/todos?dayView=${params.dayView}&id=${params.id}`)
+      return  await axios.get(api)
     } catch (error) {
         console.log('Error fetching data')
     }
