@@ -8,6 +8,9 @@ const todoListSchema = new mongoose.Schema({
   dayView: String,
   action:String,
   parentId:String,
+  viewed:String,
+  image:String,
+  major:Boolean,
 });
 
 const todo = mongoose.model("goals", todoListSchema);

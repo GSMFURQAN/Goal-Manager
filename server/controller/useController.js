@@ -1,37 +1,126 @@
 import Todo from "../schema/todoListSchema.js";
 import { ObjectId } from "mongodb";
-export const getTodos = async (req, res) => {
-  const params = req.query;
-  let todos = "";
-  
-  if (params.id) {
-    let all = await Todo.find({_id:params.id});
-    todos = all
-    // Todo.insert;
+import moment from "moment";
+
+  export const getTodos = async (req, res) => {
+    const params = req.query;
+    let todos = "";
+
+    console.log("tam", params);
+    // --------------------------------------------------------------------------
+    if (params.id) {
+      let all = await Todo.findOne({_id:params.id});
+      todos = [all];
+      // Todo.insert;
+      console.log('checkid',params, )
+    }
+  // -----------------------------------------------------------------------------
+  if (params.searchtxt) {
+    let all = await Todo.find({
+      title: { $regex: new RegExp(params.searchtxt, "i") },
+    });
+    todos = all;
+    console.log('checksearch',params, )
+
   }
-  // if (params.searchtxt) {
-  //   let all = await Todo.find({
-  //     title: { $regex: new RegExp(params.searchtxt, "i") },
-  //   });
-  //   todos = all;
-  // }
+  // -----------------------------------------------------------------------------
+  if (params.major) {
+    let all = await Todo.find({
+      major: true,
+    });
+    todos = all;
+    console.log('majorSearch',params, )
+
+  }
+  // // --------------------------------------------------------------------------------
+  if (params.viewed) {
+    let all = await Todo.find({
+      viewed: params.viewed},{_id:1,viewed:1,title:1,dueDate:1}
+    );
+    todos = all;
+    console.log('checkview',params, )
+
+  }
+  // // ---------------------------------------------------------------------------------
+  if (params.startDate || params.endDate) {
+    let all;
+
+    all = await Todo.find({
+      dueDate: {
+        $gt: params.startDate,
+        $lt: params.endDate,
+      },
+    });
+    todos = all;
+    console.log('checkstart',params, )
+  }
+
+  // -------------------------------------------------------------------------------
   if (params.dayView) {
     if (params.dayView == "all") {
       let all = await Todo.find({ done: false }).sort({ dueDate: 1 });
       todos = all;
     } else {
-      let all = await Todo.find({ dayView: params.dayView }).sort({
-        dueDate: -1,
-      });
+      let all;
+      if (params.dayView === "day") {
+        all = await Todo.find({
+          dueDate: { $gt: moment().startOf("day").toDate(),
+          $lt: moment().endOf("day").toDate()
+           },
+        }).sort({
+          dueDate: -1,
+        });
+      }
+      if (params.dayView === "month") {
+        all = await Todo.find({
+          dueDate: {
+            $gt: moment().startOf("day").toDate(),
+            $lt: moment().endOf("month").toDate(),
+          },
+        }).sort({
+          dueDate: 1,
+        });
+      }
+      if (params.dayView === "year") {
+        all = await Todo.find({
+          dueDate: {
+            $gt: moment().add(1, "month").startOf("month").toDate(),
+            $lt: moment().endOf("year").toDate(),
+          },
+        }).sort({
+          dueDate: -1,
+        });
+      }
+      if (params.dayView === "future") {
+        all = await Todo.find({
+          dueDate: {
+            $gt: moment().add(1, "year").startOf("year").toDate(),
+            $lt: moment().endOf("year").toDate(),
+          },
+        }).sort({
+          dueDate: -1,
+        });
+      }
+      if (params.dayView === "previous") {
+        all = await Todo.find({
+          dueDate: {
+            $lt: moment().startOf("day").toDate(),
+          },
+        }).sort({
+          dueDate: -1,
+        });
+      }
+
       todos = all;
     }
-  } 
-  // else {
-  //   todos = await Todo.find({ dayView: "dayView" }).sort({ dueDate: -1 });
-  //   console.log("dd", Todo.find());
-  // }
+    console.log('checkday',params, )
 
-  todos = await todos.map((x) => ({
+  }
+  if (Object.keys(params).length === 0) {
+    todos = [];
+  }
+  console.log("cetd", todos);
+  todos = await todos?.map((x) => ({
     ...x._doc,
     elapsed: x._doc.dueDate < new Date(),
   }));
@@ -44,35 +133,14 @@ export const getTodos = async (req, res) => {
   }
 };
 
-export const getProgress = async (req, res) => {
-  const params = req.query;
-
-  let progress = "";
-  if (params.dayView === "all") {
-    progress = await Todo.find({}, { done: 1, dueDate: 1 });
-  } else {
-    progress = await Todo.find(
-      { dayView: params.dayView },
-      { done: 1, dueDate: 1 }
-    );
-  }
-  progress = await progress.map((x) => ({
-    ...x._doc,
-    elapsed: x._doc.dueDate < new Date(),
-  }));
-
-  try {
-    res.status(201).json(progress);
-  } catch (error) {
-    res.status(409).json({ message: error.message });
-  }
-};
 
 export const updateTodo = async (req, res) => {
   const todo = req.body;
+  const image = req?.file?.filename
+  console.log('daxx',req.body._id, req.file)
   try {
     const { _id, ...newTodo } = todo;
-    await Todo.updateOne({ _id: req.params.id }, { $set: newTodo });
+    await Todo.updateOne({ _id: req.body._id }, { $set: newTodo, image });
     res.status(201).json(newTodo);
   } catch (error) {
     console.log("error saving the data in db", error);
@@ -82,7 +150,9 @@ export const updateTodo = async (req, res) => {
 
 export const addNewTodo = async (req, res) => {
   const todo = req.body;
-  const newTodo = new Todo(todo);
+  const image = req?.file?.filename;
+  const newTodo = new Todo({...todo, image});
+  console.log('daxz',req.body, req?.file)
   try {
     const result = await newTodo.save();
     res.status(201).json(result);
