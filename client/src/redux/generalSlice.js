@@ -6,7 +6,7 @@ axios.defaults.withCredentials =true
 
 const generalSlice = createSlice({
   name: "general",
-  initialState: { dayView: "daily", theme: true, id: "", action: '' },
+  initialState: { dayView: "day", theme: true, id: "", action: '' },
   reducers: {
     selectView: (state, payload) => {
       console.log('ee',payload)

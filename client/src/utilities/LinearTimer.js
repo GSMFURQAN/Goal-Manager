@@ -13,7 +13,7 @@ function LinearProgressWithLabel(props) {
       <Box >
         <Typography variant="body2" color="text.secondary">{`${Math.round(
           props.value,
-        )} ${props.dayView === 'daily' ? 'hours' : 'days'}  Left`}</Typography>
+        )} ${props.dayView === 'day' ? 'hours' : 'days'}  Left`}</Typography>
       </Box>
     </Box>
   );

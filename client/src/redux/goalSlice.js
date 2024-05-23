@@ -1,6 +1,6 @@
 // dataSlice.js
-import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
   data: null,
@@ -9,23 +9,31 @@ const initialState = {
 };
 const apiUrl = process.env.REACT_APP_API_URL;
 
-axios.defaults.withCredentials =true
+axios.defaults.withCredentials = true;
 
 export const fetchData = (params) => async (dispatch) => {
   dispatch(fetchDataStart());
-  console.log('daf',params)
+  console.log("daf", params);
   try {
     // Perform API call here
-    let api = apiUrl+'/todos?'
-    if(params.dayView){
-      api +=  `&dayView=${params.dayView}`
-    }if(params.id){
-      api += `&id=${params.id}`
-    }if(params.searchtxt){
-      api+=  `&searchtxt=${params.searchtxt}`
+    let api = apiUrl + "/todos?";
+    if (params.dayView) {
+      api += `&dayView=${params.dayView}`;
     }
-    const response = await axios.get(api)
-    const data =  response.data;
+    if (params.id) {
+      api += `&id=${params.id}`;
+    }
+    if (params.searchtxt) {
+      api += `&searchtxt=${params.searchtxt}`;
+    }
+    if (params.major) {
+      api += `&major=${params.major}`;
+    }
+    if (params.startDate || params.endDate) {
+      api += `&startDate=${params.startDate }&endDate=${params.endDate}`;
+    }
+    const response = await axios.get(api);
+    const data = response.data;
     dispatch(fetchDataSuccess(data));
   } catch (error) {
     dispatch(fetchDataFailure(error.message));
@@ -33,7 +41,7 @@ export const fetchData = (params) => async (dispatch) => {
 };
 
 const goalSlice = createSlice({
-  name: 'goal',
+  name: "goal",
   initialState,
   reducers: {
     fetchDataStart(state) {
@@ -51,5 +59,6 @@ const goalSlice = createSlice({
   },
 });
 
-export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } = goalSlice.actions;
+export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } =
+  goalSlice.actions;
 export default goalSlice.reducer;
