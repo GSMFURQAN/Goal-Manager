@@ -6,6 +6,7 @@ const app = express();
 const Port = 8000;
 Connection();
 app.use(express.json());
+app.use( express.static('uploads'))
 app.use(
   cors({
     origin: ["https://goal-manager-client.vercel.app","http://localhost:3000"],
