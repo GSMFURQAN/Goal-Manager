@@ -11,6 +11,9 @@ export const getTodos = async(params)=>{
   }if(params.id){
     api += `&id=${params.id}`
   }
+  if(params.viewed ){
+    api += `&viewed=${params.viewed}`
+  }
     try {
       return  await axios.get(api)
     } catch (error) {
@@ -20,16 +23,26 @@ export const getTodos = async(params)=>{
 
 
 export const updateTodo = async(params)=>{
+  console.log('ter',params)
     try {
-      return  await axios.put(apiUrl + `/update-todo/${params._id}`, params)
+      return  await axios.put(apiUrl + `/update-todo`, params,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
     } catch (error) {
         console.log('Error updating data')
       }
     }
     
     export const addNewTodo = async(params)=>{
+      console.log('fet',params)
       try {
-        return await axios.post(apiUrl + `/add-todo`, params)
+        return await axios.post(apiUrl + `/add-todo`, params,{
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
       } catch (error) {
         console.log('Error adding data')
   }
