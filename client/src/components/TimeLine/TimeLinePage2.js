@@ -19,7 +19,6 @@ import {
   Divider,
   Stack,
 } from "@mui/material";
-import Pic1 from "../../assets/pic1.png";
 import { fireConfetti } from "./confetti";
 import ScrollToBottom from "./ScrollToBottom";
 import { useDispatch, useSelector } from "react-redux";
@@ -114,7 +113,7 @@ export default function TimeLinePage2() {
                   <CardMedia
                     component="img"
                     height="140px"
-                    image={x?.image ? apiUrl + "/" + x.image : Pic1}
+                    image={x?.image ? apiUrl + "/" + x.image : ''}
                     alt="green iguana"
                   />
                   <CardContent>
