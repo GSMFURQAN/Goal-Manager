@@ -6,14 +6,14 @@ axios.defaults.withCredentials =true
 
 const generalSlice = createSlice({
   name: "general",
-  initialState: { dayView: "day", theme: true, id: "", action: '' },
+  initialState: { dayView: "day", theme: true, id: "", action: '', dueDate:'' },
   reducers: {
     selectView: (state, payload) => {
-      console.log('ee',payload)
       state.dayView = payload.payload.dayView;
       state.theme = payload.payload.theme;
       state.id = payload.payload.id;
       state.action = payload.payload.action;
+      state.dueDate = payload.payload.dueDate
     },
   },
 });

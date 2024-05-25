@@ -32,8 +32,8 @@ const MyCard = () => {
   }, [dispatch, general.dayView]);
 
   return (
-    <div style={{ width: "75%" }}>
-      <Stack my={2} px={4} sx={{ overflowY: "auto", maxHeight: "450px" }}>
+    <div style={{ width: "75%" , border:'2px solid gray', borderRadius:'12px', margin:'12px 0px'}}>
+      <Stack my={2} px={1} sx={{ overflowY: "auto", maxHeight: "440px" }}>
         {!data ? (
           <Stack m={'auto'}>
           <CircularProgress />

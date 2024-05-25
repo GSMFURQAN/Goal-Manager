@@ -82,7 +82,7 @@ dispatch(selectSnack({...snack, open:false}))  };
         sx={{
           width: "90%",
         }}
-        pt={4}
+        pt={2}
         m={"auto"}
       >
         <Navbar />

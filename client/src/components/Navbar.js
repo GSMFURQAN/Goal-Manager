@@ -17,7 +17,7 @@ import ViewDayIcon from "@mui/icons-material/ViewDay";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
@@ -26,6 +26,7 @@ import HistoryIcon from "@mui/icons-material/History";
 import {
   Divider,
   FormControl,
+  Icon,
   InputAdornment,
   Stack,
   TextField,
@@ -43,16 +44,16 @@ export default function Navbar() {
   const [searchtxt, setSearchtxt] = React.useState("");
   const [Notifications, setNotifications] = React.useState([]);
   const { dayView } = useSelector((state) => state.general);
-
+  const location = useLocation();
   React.useEffect(() => {
     dispatch(fetchData({ searchtxt: searchtxt }));
   }, [searchtxt]);
   React.useEffect(() => {
     getNotifications();
   }, [goal]);
-
+  const navigate = useNavigate();
   const getNotifications = () => {
-    getTodos({ viewed: "NO" }).then((res) => setNotifications(res.data));
+    getTodos({ viewed: "NO" }).then((res) => setNotifications(res?.data));
   };
 
   const isMenuOpen = Boolean(anchorEl);
@@ -111,7 +112,6 @@ export default function Navbar() {
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
-  console.log("nots", Notifications);
   const notificationId = "primary-notification-account-menu";
   const renderNotificationMenu = (
     <Menu
@@ -129,24 +129,30 @@ export default function Navbar() {
       open={isNotificationOpen}
       onClose={handlenotificationClose}
     >
-      {Notifications.map((x) => (
-        <>
-          <MenuItem>
-            <Stack
-              display={"flex"}
-              direction={"row"}
-              width={"200px"}
-              justifyContent={"space-between"}
-            >
-              <Typography fontSize={"14px"}>{x.title}</Typography>
-              <Typography fontSize={"14px"}>
-                {moment(x.dueDate).format("DD-MM-YYYY")}
-              </Typography>
-            </Stack>
-          </MenuItem>
-          <Divider />
-        </>
-      ))}
+      {Notifications.length > 1 ? (
+        Notifications.map((x) => (
+          <>
+            <MenuItem>
+              <Stack
+                display={"flex"}
+                direction={"row"}
+                width={"200px"}
+                justifyContent={"space-between"}
+              >
+                <Typography fontSize={"14px"}>{x?.title}</Typography>
+                <Typography fontSize={"14px"}>
+                  {moment(x.dueDate).format("DD-MM-YYYY")}
+                </Typography>
+              </Stack>
+            </MenuItem>
+            <Divider />
+          </>
+        ))
+      ) : (
+        <Typography fontSize={"14px"} px={1}>
+          {"No New Notifications"}
+        </Typography>
+      )}
     </Menu>
   );
 
@@ -230,20 +236,20 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            sx={{ margin: "0px 4px", mr: 2 }}
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
+          <img
+            src="goal.png"
+            width={"28px"}
+            height={"28px"}
+            style={{ margin: "12px", cursor: "pointer" }}
+            onClick={() => navigate("/")}
+            alt="logo"
+          />{" "}
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            sx={{ display: { xs: "none", sm: "block" }, cursor: "pointer" }}
+            onClick={() => navigate("/")}
           >
             Goal Tracker
           </Typography>
@@ -266,27 +272,47 @@ export default function Navbar() {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
+              sx={{ margin: "0px 4px", color: "primary" }}
+              color="primary"
+              size="large"
+              aria-label="show 17 new notifications"
+            >
+              <Link to="/">
+                <Badge color="error">
+                  <ViewDayIcon
+                    style={
+                      location.pathname === "/"
+                        ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
+                        : {color:'white'}
+                    }
+                    // style={{
+                    //   color: location.pathname === "/" ? "cyan" : "white",
+                    //   boxShadow:
+                    //     location.pathname === "/" && "0 0 30px 3px cyan",
+                    // }}
+                  />
+                </Badge>
+              </Link>
+            </IconButton>
+
+            <IconButton
               sx={{ margin: "0px 4px" }}
               size="large"
               aria-label="show 4 new mails"
             >
               <Link to={"/calendar"}>
-                <Badge badgeContent={4} color="error">
-                  <CalendarMonthIcon sx={{ color: "white" }} />
+                <Badge color="error">
+                  <CalendarMonthIcon
+                    style={
+                      location.pathname === "/calendar"
+                        ? { color: "cyan", boxShadow: "0 0 30px 6px cyan" }
+                        : {color:'white',}
+                    }
+                  />
                 </Badge>
               </Link>
             </IconButton>
-            <IconButton
-              sx={{ margin: "0px 4px" }}
-              size="large"
-              aria-label="show 17 new notifications"
-            >
-              <Link to="/">
-                <Badge badgeContent={17} color="error">
-                  <ViewDayIcon sx={{ color: "white" }} />
-                </Badge>
-              </Link>
-            </IconButton>
+
             <IconButton
               sx={{ margin: "0px 4px" }}
               size="large"
@@ -298,19 +324,27 @@ export default function Navbar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+
             <IconButton
               sx={{ margin: "0px 4px" }}
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
-              onClick={handleNotificationsOpen}
+              // onClick={handleNotificationsOpen}
             >
               <Link to="/timeLine">
-                <Badge badgeContent={2} color="error">
-                  <HistoryIcon sx={{ color: "white" }} />{" "}
+                <Badge color="error">
+                  <HistoryIcon
+                   style={
+                    location.pathname === "/timeLine"
+                      ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
+                      : {color:'white'}
+                  }
+                  />{" "}
                 </Badge>
               </Link>
             </IconButton>
+
             <IconButton
               sx={{ margin: "0px 4px" }}
               size="large"

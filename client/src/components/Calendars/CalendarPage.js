@@ -27,7 +27,6 @@ useEffect(()=>{
  
   dispatch(fetchData({startDate:startDate, endDate:endDate}))
   // let x =  moment(currentDate).startOf('month').format('YYYY-MM-DDTHH:mm:ss.SSSZ')
-  console.log("sds", startDate,'------', moment().startOf("day").toDate());
 },[currentDate,currentView])
 
   useEffect(() => {
@@ -47,8 +46,7 @@ useEffect(()=>{
     // view !== "agenda" && dispatch(fetchData({...currentDate && {date:moment(currentDate).toString()}, dayView: view }));
   };
   const handleSelect = ({ start, end }) => {
-    console.log(start);
-    console.log(end);
+    
     const title = window.prompt("New Event name");
     if (title)
       setEventsData([
@@ -64,7 +62,6 @@ useEffect(()=>{
 		dayFormat: 'eeee, MMMM d',
 		timeGutterFormat: 'h:mm',
 	};
-  console.log("dsa", eventData);
   return (
     <>
       <Stack mx={"10%"} mt={"3%"}>
@@ -82,7 +79,7 @@ useEffect(()=>{
           onView={handleViewChange}
           defaultDate={new Date()}
           popup={false}
-          formats={bigCalFormats}
+          // formats={bigCalFormats}
 					timeslots={2}
           onNavigate={(newDate)=>setCurrentDate(newDate)}
           // onShowMore={(events, date) =>

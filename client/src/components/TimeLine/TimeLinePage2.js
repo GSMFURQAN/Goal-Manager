@@ -84,7 +84,6 @@ export default function TimeLinePage2() {
     dispatch(fetchData({ major: true }));
   }, []);
 
-  console.log("sde", goal);
   const apiUrl = process.env.REACT_APP_API_URL;
 
   return (
@@ -95,8 +94,8 @@ export default function TimeLinePage2() {
             <TimelineOppositeContent
               sx={{ m: "auto 0" }}
               align="right"
-              variant="body2"
-              color="text.secondary"
+              variant="body1"
+              // color="
             >
               {moment(x.dueDate).format("DD MMMM, YYYY")}
             </TimelineOppositeContent>
@@ -113,7 +112,7 @@ export default function TimeLinePage2() {
                   <CardMedia
                     component="img"
                     height="140px"
-                    image={x?.image ? apiUrl + "/" + x.image : ''}
+                    image={x?.image }
                     alt="green iguana"
                   />
                   <CardContent>

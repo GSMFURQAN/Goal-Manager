@@ -38,17 +38,17 @@ const MyCards = ({ todo, general, open, setOpen }) => {
   return (
     <div>
       <Stack
-        border={`2px solid ${
-          todo.done
-            ? "green"
-            : moment(todo.dueDate).diff(moment(), "hours") <= 0
-            ? "red"
-            : "cyan"
-        }`}
+        // border={`2px solid ${
+        //   todo.done
+        //     ? "green"
+        //     : moment(todo.dueDate).diff(moment(), "hours") <= 0
+        //     ? "red"
+        //     : "cyan"
+        // }`}
         key={todo._id}
         width={"100%"}
         borderRadius={4}
-        m={1}
+        mx={1}
         px={2}
         onMouseOver={() => setSelectedId(todo._id)}
         onMouseLeave={() => setSelectedId(todo._id)}
@@ -72,6 +72,13 @@ const MyCards = ({ todo, general, open, setOpen }) => {
                 }}
                 variant="h6"
                 fontSize={"14px"}
+                color={`${
+                    todo.done
+                      ? "green"
+                      : moment(todo.dueDate).diff(moment(), "hours") <= 0
+                      ? "red"
+                      : "cyan"
+                  }`}
               >
                 {todo.title}
               </Typography>
@@ -83,19 +90,19 @@ const MyCards = ({ todo, general, open, setOpen }) => {
                 fontSize={"12px"}
                 py={1}
               >
-                Due Date :
+                Due Date : &nbsp;
               </Typography>{" "}
-              {moment(todo.dueDate).format("DD-MM-YYYY , hh:mm a")}
+              {moment(todo.dueDate).format("DD MMMM YYYY , hh:mm a")}
             </Typography>
           </Stack>
-          <Divider />
+          {/* <Divider /> */}
 
           <Stack
             width={600}
-            mt={0.5}
+            // mt={0.5}
             sx={{
-              maxHeight: selectedId === todo._id ? "100%" : 0,
-              overflow: "hidden",
+              // maxHeight: selectedId === todo._id ? "100%" : 0,
+              // overflow: "hidden",
               // transition: "max-height 0.2s ease",
             }}
           >
@@ -151,6 +158,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
                     selectView({
                       ...general,
                       id: todo._id,
+                      dueDate: todo.dueDate,
                       action: 'subTask',
                     })
                   );
@@ -179,6 +187,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
           </Stack>
         </Stack>
       </Stack>
+      <Divider/>
     </div>
   );
 };

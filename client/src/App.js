@@ -14,6 +14,7 @@ import {
 import Navbar from "./components/Navbar";
 import TimeLinePage from "./components/TimeLine/TimeLinePage";
 import TimeLinePage2 from "./components/TimeLine/TimeLinePage2";
+import ImageTest from "./components/imageFolder/ImageTest";
 
 function App() {
   const generalState = useSelector((state) => state.general);
@@ -38,6 +39,7 @@ function App() {
           <Route path="/" exact element={<Home />} />
           <Route path="/calendar" exact element={<CalendarPage />} />
           <Route path="/timeLine" exact element={<TimeLinePage2 />} />
+          {/* <Route path="/imagetest" exact element={<ImageTest/>} /> */}
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
