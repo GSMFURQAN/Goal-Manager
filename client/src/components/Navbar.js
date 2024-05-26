@@ -259,6 +259,7 @@ export default function Navbar() {
                     </Badge>
                   </Link>
                 </IconButton>
+                <p>Time Line</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
