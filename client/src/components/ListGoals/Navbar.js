@@ -6,7 +6,7 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import AddGoal from "./AddGoal";
 import { getTodos } from "../../Apis/Apis";
-const Navbar = () => {
+const Navbar = ({ progressView, setProgressView }) => {
   const [open, setOpen] = React.useState(false);
 
   const general = useSelector((state) => state.general);
@@ -115,10 +115,10 @@ const Navbar = () => {
               color="info"
               fullWidth="12px"
               onClick={() => {
-                handleAddNewTodo();
+                setProgressView(!progressView);
               }}
             >
-              See Progress
+              {!progressView ? "See" : "Hide"} Progress
             </Button>
           </Grid>
         </Hidden>

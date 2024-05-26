@@ -12,6 +12,7 @@ import {
   Switch,
   ToggleButton,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import SearchBar from "./search";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import Navbar from "./Navbar";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from '@mui/material/styles';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -39,13 +41,22 @@ const navigate = useNavigate()
     incomplete: 0,
     elapsed: 0,
   });
+  const theme = useTheme();
+  const isNotSmallScreen = useMediaQuery(theme.breakpoints.up('md'));
+  
+const [progressView, setProgressView] = React.useState(false)
   let account = JSON.parse(localStorage.getItem("account"));
+
   React.useEffect(() => {
     if (!account) {
       navigate("login");
     } 
   }, []);
-  
+  React.useEffect(()=>{
+    setProgressView(isNotSmallScreen)
+
+  },[isNotSmallScreen])
+  console.log('sda', progressView, isNotSmallScreen)
   const dispatch = useDispatch();
   let completed = progress?.data?.filter((x) => x.done === true).length;
   let incomplete = progress?.data?.filter((x) => x.done === false && !x.elapsed).length;
@@ -93,11 +104,11 @@ dispatch(selectSnack({...snack, open:false}))  };
         pt={2}
         m={"auto"}
       >
-        <Navbar />
+        <Navbar progressView={progressView} setProgressView={setProgressView}/>
         {/* <SearchBar /> */}
-        <Stack display={"flex"} direction={{xs:"column-reverse", sm:'row', md:'row', lg:"row"}}>
+      <Stack display={"flex"} direction={{xs:"column-reverse", sm:'row', md:'row', lg:"row"}}>
           <MyList />
-          <Stack width={"30%"} position={"relative"}>
+          {progressView && <Stack width={"30%"} position={"relative"}>
             <Stack direction="row" mx={"52px"} my={2} spacing={1} alignItems="center">
               <Typography textTransform={"capitalize"}>
                 {general.dayView}
@@ -139,7 +150,7 @@ dispatch(selectSnack({...snack, open:false}))  };
                 height={150}
               />
             </Box>
-          </Stack>
+          </Stack>}
         </Stack>
         <Snackbar open={snack.open} autoHideDuration={6000} onClose={handleClose}   anchorOrigin={{ vertical:'top', horizontal :'right'}}>
           <Alert
