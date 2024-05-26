@@ -136,11 +136,10 @@ import moment from "moment";
 
 export const updateTodo = async (req, res) => {
   const todo = req.body;
-  const image = req?.file?.filename
-  console.log('daxx',req.body._id, req.file)
+ 
   try {
     const { _id, ...newTodo } = todo;
-    await Todo.updateOne({ _id: req.body._id }, { $set: newTodo, image });
+    await Todo.updateOne({ _id: req.body._id }, { $set: newTodo });
     res.status(201).json(newTodo);
   } catch (error) {
     console.log("error saving the data in db", error);
@@ -150,9 +149,8 @@ export const updateTodo = async (req, res) => {
 
 export const addNewTodo = async (req, res) => {
   const todo = req.body;
-  const image = req?.file?.filename;
-  const newTodo = new Todo({...todo, image});
-  console.log('daxz',req.body, req?.file)
+  console.log('daxz', todo)
+  const newTodo = new Todo(todo);
   try {
     const result = await newTodo.save();
     res.status(201).json(result);

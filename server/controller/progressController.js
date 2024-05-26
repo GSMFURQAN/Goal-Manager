@@ -53,6 +53,16 @@ export const getProgress = async (req, res) => {
           { done: 1, dueDate: 1 }
         );
       }
+      if (params.dayView === "previous") {
+        progress = await Todo.find({
+            dueDate: {
+              $lt: moment().startOf("day").toDate(),
+            },
+          }).sort({
+            dueDate: -1,
+          });
+      
+      }
       if (params.dayView === "all") {
         progress = await Todo.find({ done: false }, { done: 1, dueDate: 1 });
       }
