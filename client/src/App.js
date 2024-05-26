@@ -10,35 +10,39 @@ import {
   Route,
   Routes,
   BrowserRouter,
+  useNavigate,
 } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import TimeLinePage from "./components/TimeLine/TimeLinePage";
 import TimeLinePage2 from "./components/TimeLine/TimeLinePage2";
-import ImageTest from "./components/imageFolder/ImageTest";
+import ImageTest from "./UnUsedComponents/ImageTest";
+import Signup from "./auth.js/signup";
+import Login from "./auth.js/login";
 
 function App() {
   const generalState = useSelector((state) => state.general);
+
   const dispatch = useDispatch();
   const darkTheme = createTheme({
     palette: {
       mode: generalState.theme ? "dark" : "light",
     },
   });
-  console.log(
-    "ads",
-    Array(10).map((s) => ({ s: "a" }))
-  );
+ 
+  
   return (
     // <ColorModeContext.Provider value={theme}>
 
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <BrowserRouter>
-          <Navbar/>
+        <Navbar />
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/calendar" exact element={<CalendarPage />} />
           <Route path="/timeLine" exact element={<TimeLinePage2 />} />
+          <Route path="/signup" exact element={<Signup />} />
+          <Route path="/login" exact element={<Login />} />
           {/* <Route path="/imagetest" exact element={<ImageTest/>} /> */}
         </Routes>
       </BrowserRouter>

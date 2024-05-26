@@ -6,7 +6,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import axios from "axios";
-import {app} from '../../firebase.js';
+import {app} from '../firebase.js';
 
 function ImageTest() {
   const [img, setImg] = useState(undefined);

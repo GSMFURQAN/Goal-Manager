@@ -12,13 +12,14 @@ import moment from "moment";
 import React, { useEffect } from "react";
 import { showTime } from "../../utilities/utils";
 import { fetchData, updateGoal } from "../../redux/goalSlice";
-import { deleteTodo, updateTodo } from "../../Apis";
+import { deleteTodo, updateTodo } from "../../Apis/Apis";
 import Timer from "../../utilities/Timer";
 import { useDispatch, useSelector } from "react-redux";
 import { getProgress, selectView } from "../../redux/generalSlice";
 import AddGoal from "./AddGoal";
 import LinearTimer from "../../utilities/LinearTimer";
 import MyCards from "./MyCards";
+import MyMobileCard from "./MyMobileCard";
 
 const MyCard = () => {
   const [open, setOpen] = React.useState(false);
@@ -32,7 +33,7 @@ const MyCard = () => {
   }, [dispatch, general.dayView]);
 
   return (
-    <div style={{ width: "75%" , border:'2px solid gray', borderRadius:'12px', margin:'12px 0px'}}>
+    <Stack sx={{ width: {lg:"75%", xs:'100%'} , border:'2px solid gray', borderRadius:'12px', margin:'12px 0px'}}>
       <Stack my={2} px={1} sx={{ overflowY: "auto", maxHeight: "440px" }}>
         {!data ? (
           <Stack m={'auto'}>
@@ -43,7 +44,7 @@ const MyCard = () => {
             .filter((x) => x.parentId == "")
             .map((todo) => (
               <>
-                <MyCards
+                <MyMobileCard
                   todo={todo}
                   general={general}
                   open={open}
@@ -83,7 +84,7 @@ const MyCard = () => {
         )}
       </Stack>
       <AddGoal open={open} setOpen={setOpen} id={general.id} />
-    </div>
+    </Stack>
   );
 };
 

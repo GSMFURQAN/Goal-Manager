@@ -11,7 +11,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchData } from "../../redux/goalSlice";
 import { getProgress, selectView } from "../../redux/generalSlice";
-import { deleteTodo, updateTodo } from "../../Apis";
+import { deleteTodo, updateTodo } from "../../Apis/Apis";
 import { showTime } from "../../utilities/utils";
 import LinearTimer from "../../utilities/LinearTimer";
 
@@ -36,15 +36,9 @@ const MyCards = ({ todo, general, open, setOpen }) => {
     });
   };
   return (
-    <div>
+    <div >
       <Stack
-        // border={`2px solid ${
-        //   todo.done
-        //     ? "green"
-        //     : moment(todo.dueDate).diff(moment(), "hours") <= 0
-        //     ? "red"
-        //     : "cyan"
-        // }`}
+      
         key={todo._id}
         width={"100%"}
         borderRadius={4}
@@ -101,9 +95,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
             width={600}
             // mt={0.5}
             sx={{
-              // maxHeight: selectedId === todo._id ? "100%" : 0,
-              // overflow: "hidden",
-              // transition: "max-height 0.2s ease",
+             
             }}
           >
             <Typography

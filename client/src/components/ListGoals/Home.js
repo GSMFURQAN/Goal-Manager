@@ -23,13 +23,14 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { PieChart } from "@mui/x-charts/PieChart";
 import Navbar from "./Navbar";
 import CloseIcon from "@mui/icons-material/Close";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Home() {
   const general = useSelector((state) => state.general);
   const snack = useSelector((state) => state.snack);
-
+const navigate = useNavigate()
   const progress = useSelector((state) => state.progress);
   const [checked, setChecked] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -38,6 +39,13 @@ export default function Home() {
     incomplete: 0,
     elapsed: 0,
   });
+  let account = JSON.parse(localStorage.getItem("account"));
+  React.useEffect(() => {
+    if (!account) {
+      navigate("login");
+    } 
+  }, []);
+  
   const dispatch = useDispatch();
   let completed = progress?.data?.filter((x) => x.done === true).length;
   let incomplete = progress?.data?.filter((x) => x.done === false && !x.elapsed).length;
@@ -87,10 +95,10 @@ dispatch(selectSnack({...snack, open:false}))  };
       >
         <Navbar />
         {/* <SearchBar /> */}
-        <Stack display={"flex"} direction={"row"}>
+        <Stack display={"flex"} direction={{xs:"column-reverse", sm:'row', md:'row', lg:"row"}}>
           <MyList />
           <Stack width={"30%"} position={"relative"}>
-            <Stack direction="row" m={"52px"} spacing={1} alignItems="center">
+            <Stack direction="row" mx={"52px"} my={2} spacing={1} alignItems="center">
               <Typography textTransform={"capitalize"}>
                 {general.dayView}
               </Typography>
@@ -101,7 +109,7 @@ dispatch(selectSnack({...snack, open:false}))  };
               />{" "}
               <Typography>All</Typography>
             </Stack>
-            <Box sx={{ position: "absolute", top: 120 }}>
+            <Box sx={{  }}>
               <PieChart
                 series={[
                   {

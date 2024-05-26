@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Button, Checkbox, Modal, Stack, Typography } from "@mui/material";
-import { addNewTodo, deleteTodo, updateTodo } from "../../Apis";
+import { addNewTodo, deleteTodo, updateTodo } from "../../Apis/Apis";
 import { useDispatch, useSelector } from "react-redux";
 import AddGoal from "./AddGoal";
 import { fetchData } from "../../redux/goalSlice";

@@ -32,7 +32,7 @@ import {
   TextField,
 } from "@mui/material";
 import { fetchData } from "../redux/goalSlice";
-import { getTodos, updateTodo } from "../Apis";
+import { getTodos, updateTodo } from "../Apis/Apis";
 import moment from "moment";
 export default function Navbar() {
   const general = useSelector((state) => state.general);
@@ -44,14 +44,19 @@ export default function Navbar() {
   const [searchtxt, setSearchtxt] = React.useState("");
   const [Notifications, setNotifications] = React.useState([]);
   const { dayView } = useSelector((state) => state.general);
+  const navigate = useNavigate();
   const location = useLocation();
+
+  let account = JSON?.parse(localStorage?.getItem("account"));
+
   React.useEffect(() => {
     dispatch(fetchData({ searchtxt: searchtxt }));
   }, [searchtxt]);
+
   React.useEffect(() => {
     getNotifications();
   }, [goal]);
-  const navigate = useNavigate();
+
   const getNotifications = () => {
     getTodos({ viewed: "NO" }).then((res) => setNotifications(res?.data));
   };
@@ -72,8 +77,8 @@ export default function Navbar() {
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
+    localStorage.clear("account");
+    window.location.reload();
   };
   const handlenotificationClose = () => {
     setAnchorEl2(null);
@@ -109,7 +114,7 @@ export default function Navbar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
     </Menu>
   );
   const notificationId = "primary-notification-account-menu";
@@ -173,42 +178,50 @@ export default function Navbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <Link to={"/calendar"} style={{ textDecoration: "none" }}>
-        <MenuItem>
-          <IconButton
-            sx={{ margin: "0px 4px" }}
-            size="large"
-            aria-label="show 4 new mails"
-            color="white"
-          >
-            <Badge badgeContent={4} color="error">
-              <CalendarMonthIcon />
+      <MenuItem>
+        <IconButton size="large" aria-label="show 4 new mails">
+          <Link to="/">
+            <Badge color="error">
+              <ViewDayIcon
+                style={
+                  location.pathname === "/"
+                    ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
+                    : { color: "white" }
+                }
+                // style={{
+                //   color: location.pathname === "/" ? "cyan" : "white",
+                //   boxShadow:
+                //     location.pathname === "/" && "0 0 30px 3px cyan",
+                // }}
+              />
             </Badge>
-          </IconButton>
-          <p style={{ color: "white" }}>Calendar</p>
-        </MenuItem>
-      </Link>
-      <Link to={"/"}>
-        <MenuItem>
-          <IconButton
-            sx={{ margin: "0px 4px" }}
-            size="large"
-            aria-label="show 4 new mails"
-            color="white"
-          >
-            <Badge badgeContent={4} color="error">
-              <ViewDayIcon />
+          </Link>
+        </IconButton>
+        <p>Goals List</p>
+      </MenuItem>
+      <MenuItem>
+        <IconButton size="large" aria-label="show 4 new mails">
+          <Link to={"/calendar"}>
+            <Badge color="error">
+              <CalendarMonthIcon
+                style={
+                  location.pathname === "/calendar"
+                    ? { color: "cyan", boxShadow: "0 0 30px 6px cyan" }
+                    : { color: "white" }
+                }
+              />
             </Badge>
-          </IconButton>
-          <p style={{ color: "white" }}>Events</p>
-        </MenuItem>
-      </Link>
+          </Link>
+        </IconButton>
+        <p>Calendar</p>{" "}
+      </MenuItem>
+
       <MenuItem onClick={handleNotificationsOpen}>
         <IconButton
-          sx={{ margin: "0px 4px" }}
           size="large"
-          aria-label="show 17 new notifications"
+          aria-label="new notifications"
           color="inherit"
+          onClick={handleNotificationsOpen}
         >
           <Badge badgeContent={Notifications.length} color="error">
             <NotificationsIcon />
@@ -216,9 +229,19 @@ export default function Navbar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
+      <MenuItem onClick={handleNotificationsOpen}>
+        <IconButton
+          onClick={() =>
+            dispatch(selectView({ ...general, theme: !general.theme }))
+          }
+          color="inherit"
+        >
+          {general.theme ? <Brightness7Icon /> : <Brightness4Icon />}
+        </IconButton>
+        <p>Theme</p>
+      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
-          sx={{ margin: "0px 4px" }}
           size="large"
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -253,140 +276,146 @@ export default function Navbar() {
           >
             Goal Tracker
           </Typography>
-          <TextField
-            sx={{ marginLeft: "28px", width: "400px" }}
-            placeholder="Search..."
-            id="input-with-icon-textfield"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            variant="standard"
-            onChange={(e) => {
-              setSearchtxt(e.target.value);
-            }}
-          />
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              sx={{ margin: "0px 4px", color: "primary" }}
-              color="primary"
-              size="large"
-              aria-label="show 17 new notifications"
-            >
-              <Link to="/">
-                <Badge color="error">
-                  <ViewDayIcon
-                    style={
-                      location.pathname === "/"
-                        ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
-                        : {color:'white'}
+          {account && (
+            <>
+              <TextField
+                sx={{ marginLeft: "28px", width: "400px" }}
+                placeholder="Search..."
+                id="input-with-icon-textfield"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                variant="standard"
+                onChange={(e) => {
+                  setSearchtxt(e.target.value);
+                }}
+              />
+              <Box sx={{ flexGrow: 1 }} />
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <IconButton
+                  sx={{ margin: "0px 4px", color: "primary" }}
+                  color="primary"
+                  size="large"
+                  aria-label="show 17 new notifications"
+                >
+                  <Link to="/">
+                    <Badge color="error">
+                      <ViewDayIcon
+                        style={
+                          location.pathname === "/"
+                            ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
+                            : { color: "white" }
+                        }
+                        // style={{
+                        //   color: location.pathname === "/" ? "cyan" : "white",
+                        //   boxShadow:
+                        //     location.pathname === "/" && "0 0 30px 3px cyan",
+                        // }}
+                      />
+                    </Badge>
+                  </Link>
+                </IconButton>
+
+                <IconButton
+                  sx={{ margin: "0px 4px" }}
+                  size="large"
+                  aria-label="show 4 new mails"
+                >
+                  <Link to={"/calendar"}>
+                    <Badge color="error">
+                      <CalendarMonthIcon
+                        style={
+                          location.pathname === "/calendar"
+                            ? { color: "cyan", boxShadow: "0 0 30px 6px cyan" }
+                            : { color: "white" }
+                        }
+                      />
+                    </Badge>
+                  </Link>
+                </IconButton>
+
+                <IconButton
+                  sx={{ margin: "0px 4px" }}
+                  size="large"
+                  aria-label="show 17 new notifications"
+                  color="inherit"
+                  onClick={handleNotificationsOpen}
+                >
+                  <Badge badgeContent={Notifications.length} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+
+                <IconButton
+                  sx={{ margin: "0px 4px" }}
+                  size="large"
+                  aria-label="show 17 new notifications"
+                  color="inherit"
+                  // onClick={handleNotificationsOpen}
+                >
+                  <Link to="/timeLine">
+                    <Badge color="error">
+                      <HistoryIcon
+                        style={
+                          location.pathname === "/timeLine"
+                            ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
+                            : { color: "white" }
+                        }
+                      />{" "}
+                    </Badge>
+                  </Link>
+                </IconButton>
+
+                <IconButton
+                  sx={{ margin: "0px 4px" }}
+                  size="large"
+                  aria-label="account of current user"
+                  color="inherit"
+                >
+                  <IconButton
+                    sx={{ margin: "0px 4px", ml: 1 }}
+                    onClick={() =>
+                      dispatch(
+                        selectView({ ...general, theme: !general.theme })
+                      )
                     }
-                    // style={{
-                    //   color: location.pathname === "/" ? "cyan" : "white",
-                    //   boxShadow:
-                    //     location.pathname === "/" && "0 0 30px 3px cyan",
-                    // }}
-                  />
-                </Badge>
-              </Link>
-            </IconButton>
-
-            <IconButton
-              sx={{ margin: "0px 4px" }}
-              size="large"
-              aria-label="show 4 new mails"
-            >
-              <Link to={"/calendar"}>
-                <Badge color="error">
-                  <CalendarMonthIcon
-                    style={
-                      location.pathname === "/calendar"
-                        ? { color: "cyan", boxShadow: "0 0 30px 6px cyan" }
-                        : {color:'white',}
-                    }
-                  />
-                </Badge>
-              </Link>
-            </IconButton>
-
-            <IconButton
-              sx={{ margin: "0px 4px" }}
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-              onClick={handleNotificationsOpen}
-            >
-              <Badge badgeContent={Notifications.length} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-
-            <IconButton
-              sx={{ margin: "0px 4px" }}
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-              // onClick={handleNotificationsOpen}
-            >
-              <Link to="/timeLine">
-                <Badge color="error">
-                  <HistoryIcon
-                   style={
-                    location.pathname === "/timeLine"
-                      ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
-                      : {color:'white'}
-                  }
-                  />{" "}
-                </Badge>
-              </Link>
-            </IconButton>
-
-            <IconButton
-              sx={{ margin: "0px 4px" }}
-              size="large"
-              aria-label="account of current user"
-              color="inherit"
-            >
-              <IconButton
-                sx={{ margin: "0px 4px", ml: 1 }}
-                onClick={() =>
-                  dispatch(selectView({ ...general, theme: !general.theme }))
-                }
-                color="inherit"
-              >
-                {general.theme ? <Brightness7Icon /> : <Brightness4Icon />}
-              </IconButton>
-            </IconButton>
-            <IconButton
-              sx={{ margin: "0px 8px" }}
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              sx={{ margin: "0px 4px" }}
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+                    color="inherit"
+                  >
+                    {general.theme ? <Brightness7Icon /> : <Brightness4Icon />}
+                  </IconButton>
+                </IconButton>
+                <IconButton
+                  sx={{ margin: "0px 8px" }}
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+              <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                <IconButton
+                  sx={{ margin: "0px 4px" }}
+                  size="large"
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </Box>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
