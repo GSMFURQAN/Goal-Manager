@@ -18,10 +18,14 @@ import TimeLinePage2 from "./components/TimeLine/TimeLinePage2";
 import ImageTest from "./UnUsedComponents/ImageTest";
 import Signup from "./auth.js/signup";
 import Login from "./auth.js/login";
+import { useTheme } from '@mui/material/styles';
+import { useMediaQuery } from "@mui/material";
+import MobileTimeLine from "./components/TimeLine/MobileTimeLine";
 
 function App() {
   const generalState = useSelector((state) => state.general);
-
+  const theme = useTheme();
+  const isNotSmallScreen = useMediaQuery(theme.breakpoints.up('md'));
   const dispatch = useDispatch();
   const darkTheme = createTheme({
     palette: {
@@ -40,7 +44,7 @@ function App() {
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/calendar" exact element={<CalendarPage />} />
-          <Route path="/timeLine" exact element={<TimeLinePage2 />} />
+          <Route path="/timeLine" exact element={!isNotSmallScreen ? <MobileTimeLine/> : <TimeLinePage2 />} />
           <Route path="/signup" exact element={<Signup />} />
           <Route path="/login" exact element={<Login />} />
           {/* <Route path="/imagetest" exact element={<ImageTest/>} /> */}

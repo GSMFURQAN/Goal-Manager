@@ -240,6 +240,26 @@ export default function Navbar() {
         </IconButton>
         <p>Theme</p>
       </MenuItem>
+      <MenuItem>
+      <IconButton
+                  sx={{ margin: "0px 4px" }}
+                  size="large"
+                  aria-label="show 17 new notifications"
+                  color="inherit"
+                >
+                  <Link to="/timeLine">
+                    <Badge color="error">
+                      <HistoryIcon
+                        style={
+                          location.pathname === "/timeLine"
+                            ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
+                            : { color: "white" }
+                        }
+                      />{" "}
+                    </Badge>
+                  </Link>
+                </IconButton>
+      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"

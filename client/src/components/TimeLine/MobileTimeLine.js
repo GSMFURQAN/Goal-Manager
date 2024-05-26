@@ -4,68 +4,58 @@ import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineContent from "@mui/lab/TimelineContent";
-import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import TimelineDot from "@mui/lab/TimelineDot";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
-import LaptopMacIcon from "@mui/icons-material/LaptopMac";
-import HotelIcon from "@mui/icons-material/Hotel";
-import RepeatIcon from "@mui/icons-material/Repeat";
-import Typography from "@mui/material/Typography";
+import TimelineOppositeContent, {
+  timelineOppositeContentClasses,
+} from "@mui/lab/TimelineOppositeContent";
 import {
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
-  Divider,
   Stack,
+  Typography,
 } from "@mui/material";
-import { fireConfetti } from "./confetti";
-import ScrollToBottom from "./ScrollToBottom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/goalSlice";
 import moment from "moment";
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import ScrollToBottom from "./ScrollToBottom";
+import { fireConfetti } from "./confetti";
 
-export default function TimeLinePage2() {
+function MobileTimeLine() {
   const dispatch = useDispatch();
-  
+
   const goal = useSelector((state) => state.goal.data);
 
   React.useEffect(() => {
     dispatch(fetchData({ major: true }));
   }, []);
-
-  const apiUrl = process.env.REACT_APP_API_URL;
-
   return (
-    <>
-      <Timeline position="alternate">
-        {goal?.map((x, i) => (
-          <TimelineItem sx={{ padding: { xs: '0',         
-          sm: '0',         
-          md: '0 14%',} }} >
-            <TimelineOppositeContent
-              sx={{ m: "auto 0" }}
-              align="right"
-              variant="body1"
-              // color="
-            >
+    <div>
+      <Timeline
+        sx={{
+          [`& .${timelineOppositeContentClasses.root}`]: {
+            flex: 0.2,
+          },
+        }}
+      >
+        {goal?.map((x) => (
+          <TimelineItem key={x._id} >
+            <TimelineOppositeContent color="textSecondary" sx={{margin:'auto'}}>
               {moment(x.dueDate).format("DD MMMM, YYYY")}
             </TimelineOppositeContent>
-            <TimelineSeparator>
+            <TimelineSeparator >
               <TimelineConnector />
-              <TimelineDot>
-                <AutoAwesomeIcon/>
-              </TimelineDot>
+              <TimelineDot />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent p={2}>
+            <TimelineContent sx={{margin:"8px 0px",}}>
               <Card>
                 <CardActionArea>
                   <CardMedia
                     component="img"
-                    height="140px"
-                    image={x?.image }
+                    height="90px"
+                    image={x.image}
                     alt="green iguana"
                   />
                   <CardContent>
@@ -97,8 +87,11 @@ export default function TimeLinePage2() {
             </TimelineContent>
           </TimelineItem>
         ))}
-        <ScrollToBottom onScrollToBottom={() => fireConfetti()} />{" "}
+                <ScrollToBottom onScrollToBottom={() => fireConfetti()} />{" "}
+
       </Timeline>
-    </>
+    </div>
   );
 }
+
+export default MobileTimeLine;
