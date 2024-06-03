@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import events from "./events.js";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -16,52 +15,39 @@ function CalendarPage() {
   const general = useSelector((state) => state.general);
   const [eventData, setEventData] = useState([]);
   const { data, loading, error } = useSelector((state) => state.goal || []);
-  const [eventsData, setEventsData] = useState(events);
   const [currentView, setCurrentView] = useState(Views.MONTH);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const [open, setOpen] = useState(false);
 
 useEffect(()=>{
   let startDate =  moment(currentDate, 'ddd MMM DD YYYY HH:mm:ss [GMT] Z').startOf(currentView === 'month' ? 'month' :(currentView === 'week'? 'week':'day')).toDate();
   let endDate =   moment(currentDate, 'ddd MMM DD YYYY HH:mm:ss [GMT] Z').endOf(currentView === 'month' ? 'month' :(currentView === 'week'? 'week':'day')).toDate();
- 
   dispatch(fetchData({startDate:startDate, endDate:endDate}))
   // let x =  moment(currentDate).startOf('month').format('YYYY-MM-DDTHH:mm:ss.SSSZ')
 },[currentDate,currentView])
-
-  useEffect(() => {
-    setEventData(
-      data
+useEffect(() => {
+  setEventData(
+    data
         ? data?.map((x) => ({
-            title: x?.note,
+          title: x?.note,
             start: moment(x?.dueDate).toDate(),
             end: moment(x?.dueDate).toDate(),
           }))
-        : []
+          : []
     );
   }, [data]);
-
+  
   const handleViewChange = (view) => {
     setCurrentView(view);
     // view !== "agenda" && dispatch(fetchData({...currentDate && {date:moment(currentDate).toString()}, dayView: view }));
   };
-  const handleSelect = ({ start, end }) => {
-    
-    const title = window.prompt("New Event name");
-    if (title)
-      setEventsData([
-        ...eventsData,
-        {
-          start,
-          end,
-          title,
-        },
-      ]);
-  };const bigCalFormats = {
-		monthHeaderFormat: 'MMMM y',
-		dayFormat: 'eeee, MMMM d',
-		timeGutterFormat: 'h:mm',
-	};
+  const handleSelectSlot = (slotInfo) => {
+    setSelectedDate(slotInfo.start);
+    setOpen(true);
+  };
+  
   return (
     <>
       <Stack mx={"10%"} mt={"3%"}>
@@ -75,7 +61,7 @@ useEffect(()=>{
           selectable
           views={["day","week", "month", "agenda"]}
           onSelectEvent={(event) => alert(event.title)}
-          onSelectSlot={() => setOpen(true)}
+          onSelectSlot={handleSelectSlot}
           onView={handleViewChange}
           defaultDate={new Date()}
           popup={false}
@@ -87,7 +73,7 @@ useEffect(()=>{
           // }
         />
       </Stack>
-      <AddGoal open={open} setOpen={setOpen}/>
+      <AddGoal open={open} setOpen={setOpen} selectedDate={selectedDate}/>
     </>
   );
 }

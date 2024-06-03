@@ -29,20 +29,17 @@ export default function Signup() {
   const handleClick = () => {
     register(details)
       .then((res) => {
-        console.log("res", res);
         setOpenSnack({
           ...openSnack,
           open: true,
           message: 'user registered succesfully',
           severity: "success",
         });
-        // localStorage.setItem('account', JSON.stringify(details))
         setTimeout(() => {
           navigate('/login')
         }, 2000); 
       })
       .catch((error) => {
-        console.log('resse',error)
         setOpenSnack({
           ...openSnack,
           open: true,

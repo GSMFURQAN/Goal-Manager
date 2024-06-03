@@ -25,11 +25,9 @@ const MyCard = () => {
   const [open, setOpen] = React.useState(false);
   const general = useSelector((state) => state.general);
   const { data, loading, error } = useSelector((state) => state.goal);
-
   const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(fetchData({ dayView: general?.dayView }));
+    dispatch(fetchData({ dayView: general?.dayView}));
   }, [dispatch, general.dayView]);
 
   return (

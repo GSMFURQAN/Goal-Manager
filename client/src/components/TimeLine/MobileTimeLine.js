@@ -26,7 +26,6 @@ function MobileTimeLine() {
   const dispatch = useDispatch();
 
   const goal = useSelector((state) => state.goal.data);
-
   React.useEffect(() => {
     dispatch(fetchData({ major: true }));
   }, []);
@@ -40,16 +39,19 @@ function MobileTimeLine() {
         }}
       >
         {goal?.map((x) => (
-          <TimelineItem key={x._id} >
-            <TimelineOppositeContent color="textSecondary" sx={{margin:'auto'}}>
+          <TimelineItem key={x._id}>
+            <TimelineOppositeContent
+              color="textSecondary"
+              sx={{ margin: "auto" }}
+            >
               {moment(x.dueDate).format("DD MMMM, YYYY")}
             </TimelineOppositeContent>
-            <TimelineSeparator >
+            <TimelineSeparator>
               <TimelineConnector />
               <TimelineDot />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent sx={{margin:"8px 0px",}}>
+            <TimelineContent sx={{ margin: "8px 0px" }}>
               <Card>
                 <CardActionArea>
                   <CardMedia
@@ -87,8 +89,7 @@ function MobileTimeLine() {
             </TimelineContent>
           </TimelineItem>
         ))}
-                <ScrollToBottom onScrollToBottom={() => fireConfetti()} />{" "}
-
+        <ScrollToBottom onScrollToBottom={() => fireConfetti()} />{" "}
       </Timeline>
     </div>
   );

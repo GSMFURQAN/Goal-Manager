@@ -1,11 +1,17 @@
 import axios from "axios"
 
 const apiUrl = process.env.REACT_APP_API_URL;
+const userData = JSON.parse(sessionStorage.getItem('account'))
+const getAuthHeaders = () => {
+  return {
+    Authorization: `Bearer ${userData.jwt}`
+  };
+};
 
 axios.defaults.withCredentials =true
+
 export const getTodos = async(params)=>{
-  console.log('first',params)
-  let api = apiUrl+'/todos?'
+  let api = apiUrl+`/todos?userId=${userData?.userId}`
   if(params.dayView){
     api +=  `&dayView=${params.dayView}`
   }if(params.id){
@@ -15,7 +21,8 @@ export const getTodos = async(params)=>{
     api += `&viewed=${params.viewed}`
   }
     try {
-      return  await axios.get(api)
+      const headers = getAuthHeaders();
+      return await axios.get(api, { headers });
     } catch (error) {
         console.log('Error fetching data')
     }
@@ -23,35 +30,42 @@ export const getTodos = async(params)=>{
 
 
 export const updateTodo = async(params)=>{
-  console.log('ter',params)
-    try {
-      return  await axios.put(apiUrl + `/update-todo`, params,{
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-    } catch (error) {
-        console.log('Error updating data')
+  params = {...params, userId:userData?.userId}
+  try {
+    return  await axios.put(apiUrl + `/update-todo`, params,{
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${userData?.jwt}`
       }
-    }
-    
-    export const addNewTodo = async(params)=>{
-      console.log('fet',params)
-      try {
-        return await axios.post(apiUrl + `/add-todo`, params,{
-          headers: {
-            'Content-Type': 'multipart/form-data'
+    })
+  } catch (error) {
+    console.log('Error updating data')
+  }
+}
+
+export const addNewTodo = async(params)=>{
+  params = {...params, userId:userData?.userId}
+  try {
+    return await axios.post(apiUrl + `/add-todo`, params,{
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${userData?.jwt}`
           }
         })
       } catch (error) {
         console.log('Error adding data')
-  }
-}
-
-  
+      }
+    }
+    
+    
 export const deleteTodo = async(params)=>{
       try {
-        return await axios.delete(apiUrl + `/delete-todo/${params}`)
+        return await axios.delete(apiUrl + `/delete-todo/${userData?.userId}`,params,{
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${userData?.jwt}`
+          }
+        })
       } catch (error) {
         console.log('Error adding data')
   }

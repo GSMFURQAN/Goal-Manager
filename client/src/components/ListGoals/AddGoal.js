@@ -50,10 +50,12 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const AddGoal = ({ open, setOpen, id }) => {
+const AddGoal = ({ open, setOpen, id, selectedDate }) => {
   const general = useSelector((state) => state.general);
   const { data, loading, error } = useSelector((state) => state.goal);
   const [parentDate, setParentDate] = useState("");
+  const [fileUploadProgress, setFileUploadProgress] = useState(false)
+  const userData = JSON.parse(sessionStorage.getItem('account'))
 
   const [goalData, setGoalData] = React.useState({
     title: "",
@@ -72,14 +74,16 @@ const AddGoal = ({ open, setOpen, id }) => {
     }
   }, [id, dispatch]);
   React.useEffect(() => {
-    setGoalData({...goalData, dueDate:dayjs()})
-  }, [id, dispatch]);
+    setGoalData({...goalData, dueDate: selectedDate ? dayjs(selectedDate) : dayjs()})
+  }, [id, dispatch, selectedDate]);
 
   const handleFileUpload = async (file) => {
+    setFileUploadProgress(true)
     try {
       const downloadURL = await uploadFile(file);
       console.log("File uploaded successfully:", downloadURL);
       downloadURL && setGoalData({ ...goalData, image: downloadURL });
+      setFileUploadProgress(false)
       // You can now use the downloadURL, e.g., set it in your state or send it to your backend
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -124,8 +128,8 @@ const AddGoal = ({ open, setOpen, id }) => {
       viewed: "NO",
       major: goalData.major,
       image: goalData.image,
+      userId: userData?.userId
     };
-    // console.log('ddd',moment( payload.dueDate).diff(parentDate, 'hours') >1)
     if (
       general.action == "subTask" &&
       moment(goalData.dueDate).toISOString() > general.dueDate
@@ -257,7 +261,7 @@ const AddGoal = ({ open, setOpen, id }) => {
                     onClick={() => handleAdd()}
                     color="primary"
                   >
-                    {goalData.image ? "Add" : "image uploading..."}
+                    {!fileUploadProgress ? "Add" : "image uploading..."}
                   </Button>
                 </Stack>
               </DemoItem>

@@ -3,6 +3,13 @@ import axios from "axios";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 axios.defaults.withCredentials =true
+const userData = JSON.parse(sessionStorage.getItem('account'))
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    Authorization: `Bearer ${userData?.jwt}`
+  };
+};
 
 const generalSlice = createSlice({
   name: "general",
@@ -33,7 +40,9 @@ const snackSlice = createSlice({
 export const getProgress =(params) =>async(dispatch)=>{
   dispatch(fetchDataStart())
   try {
-    const response =  await axios.get(apiUrl + `/progress?dayView=${params.dayView}`)
+    const headers = getAuthHeaders();
+
+    const response =  await axios.get(apiUrl + `/progress?dayView=${params.dayView}&userId=${userData?.userId}`,{headers})
     dispatch(fetchDataSuccess(response.data))
   } catch (error) {
       console.log('Error fetching data')

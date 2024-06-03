@@ -27,14 +27,13 @@ export default function Login() {
   });
 
   useEffect(() => {
-    if (localStorage.getItem("account")) {
+    if (sessionStorage.getItem("account")) {
       navigate("/");
     }
   }, []);
   const handleClick = () => {
     loginUser(details)
       .then((res) => {
-        console.log('ressd',res)
         if (res?.data?.status == 201) {
           setOpenSnack({
             ...openSnack,
@@ -42,14 +41,13 @@ export default function Login() {
             message: 'Login successful',
             severity: "success",
           });
-          // localStorage.setItem('account', res.data.data)
-          localStorage.setItem('account',JSON.stringify(res.data))
+          sessionStorage.setItem('account',JSON.stringify(res?.data?.userData))
           navigate('/')
         }else{
           setOpenSnack({
             ...openSnack,
             open: true,
-            message: res.response.data.error,
+            message: res?.response?.data?.error,
             severity: "error",
           });
         

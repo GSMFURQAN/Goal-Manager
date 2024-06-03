@@ -10,13 +10,21 @@ const initialState = {
 const apiUrl = process.env.REACT_APP_API_URL;
 
 axios.defaults.withCredentials = true;
+const userData = JSON.parse(sessionStorage.getItem('account'))
+const getAuthHeaders = () => {
+  return {
+    Authorization: `Bearer ${userData?.jwt}`
+  };
+};
 
 export const fetchData = (params) => async (dispatch) => {
+
   dispatch(fetchDataStart());
-  console.log("daf", params);
   try {
+    const headers = getAuthHeaders();
+
     // Perform API call here
-    let api = apiUrl + "/todos?";
+    let api = apiUrl + `/todos?userId=${userData?.userId}`;
     if (params.dayView) {
       api += `&dayView=${params.dayView}`;
     }
@@ -32,7 +40,7 @@ export const fetchData = (params) => async (dispatch) => {
     if (params.startDate || params.endDate) {
       api += `&startDate=${params.startDate }&endDate=${params.endDate}`;
     }
-    const response = await axios.get(api);
+    const response = await axios.get(api,{headers});
     const data = response.data;
     dispatch(fetchDataSuccess(data));
   } catch (error) {

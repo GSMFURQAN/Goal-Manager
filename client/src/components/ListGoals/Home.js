@@ -45,7 +45,7 @@ const navigate = useNavigate()
   const isNotSmallScreen = useMediaQuery(theme.breakpoints.up('md'));
   
 const [progressView, setProgressView] = React.useState(false)
-  let account = JSON.parse(localStorage.getItem("account"));
+  let account = JSON.parse(sessionStorage.getItem("account"));
 
   React.useEffect(() => {
     if (!account) {
@@ -56,7 +56,6 @@ const [progressView, setProgressView] = React.useState(false)
     setProgressView(isNotSmallScreen)
 
   },[isNotSmallScreen])
-  console.log('sda', progressView, isNotSmallScreen)
   const dispatch = useDispatch();
   let completed = progress?.data?.filter((x) => x.done === true).length;
   let incomplete = progress?.data?.filter((x) => x.done === false && !x.elapsed).length;

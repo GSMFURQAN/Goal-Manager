@@ -108,7 +108,7 @@ const Navbar = ({ progressView, setProgressView }) => {
             Add todo
           </Button>
         </Grid>
-        <Hidden only={["sm", "md", "lg", "xl"]}>
+        <Hidden only={[ "md", "lg", "xl"]}>
           <Grid item xs={2} sm={2} md={1.5}>
             <Button
               variant="contained"

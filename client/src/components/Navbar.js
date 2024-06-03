@@ -47,7 +47,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  let account = JSON?.parse(localStorage?.getItem("account"));
+  let account = JSON?.parse(sessionStorage?.getItem("account"));
 
   React.useEffect(() => {
     dispatch(fetchData({ searchtxt: searchtxt }));
@@ -77,7 +77,7 @@ export default function Navbar() {
   };
 
   const handleMenuClose = () => {
-    localStorage.clear("account");
+    sessionStorage.clear("account");
     window.location.reload();
   };
   const handlenotificationClose = () => {
@@ -86,7 +86,7 @@ export default function Navbar() {
     updateNotification();
   };
   const updateNotification = () => {
-    Notifications.map((x) => {
+    Notifications?.map((x) => {
       updateTodo({ ...x, viewed: "Yes" }).then(() => {
         getNotifications();
       });
@@ -134,8 +134,8 @@ export default function Navbar() {
       open={isNotificationOpen}
       onClose={handlenotificationClose}
     >
-      {Notifications.length > 1 ? (
-        Notifications.map((x) => (
+      {Notifications?.length > 1 ? (
+        Notifications?.map((x) => (
           <>
             <MenuItem>
               <Stack
@@ -223,7 +223,7 @@ export default function Navbar() {
           color="inherit"
           onClick={handleNotificationsOpen}
         >
-          <Badge badgeContent={Notifications.length} color="error">
+          <Badge badgeContent={Notifications?.length} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -366,7 +366,7 @@ export default function Navbar() {
                   color="inherit"
                   onClick={handleNotificationsOpen}
                 >
-                  <Badge badgeContent={Notifications.length} color="error">
+                  <Badge badgeContent={Notifications?.length} color="error">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
