@@ -1,16 +1,18 @@
 import express from "express";
 import { body } from "express-validator";
-
+import jwt from "jsonwebtoken";
 import {
   addNewTodo,
   deleteTodo,
   getTodos,
   updateTodo,
-} from "../controller/useController.js";
+} from "../controller/dataController.js";
 import { getProgress } from "../controller/progressController.js";
 import multer from "multer";
 import { RegisterUser, fetchAccount, loginUser } from "../controller/userConrtoller.js";
 
+
+const jwtSecret = "GoalManagerproject";
 const router = express.Router();
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,12 +24,28 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get("/todos", getTodos);
-router.get("/progress", getProgress);
-router.put("/update-todo/", upload.single('image'), updateTodo);
-router.post("/add-todo", upload.single("image"), addNewTodo);
-router.delete("/delete-todo/:id", deleteTodo);
-router.get('/account', fetchAccount)
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, jwtSecret, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      req.user = user;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};
+
+router.get("/todos",verifyToken, getTodos);
+router.get("/progress",verifyToken, getProgress);
+router.put("/update-todo",verifyToken, upload.single('image'), updateTodo);
+router.post("/add-todo",verifyToken, upload.single("image"), addNewTodo);
+router.delete("/delete-todo/:userId/:id",verifyToken, deleteTodo);
+router.get('/account',verifyToken, fetchAccount)
 router.post('/register', [body('email').isEmail(),body('password','Password too small').isLength({min:5})], RegisterUser)
 router.post('/login',[body('email').isEmail(),body('password','Password too small').isLength({min:5})], loginUser)
 

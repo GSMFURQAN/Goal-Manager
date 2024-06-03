@@ -32,6 +32,7 @@ export const RegisterUser = async (req, res) => {
       name: user.name,
       email: user.email,
       password: secPassword,
+      userId: Math.floor(Math.random()*100000).toString()
     });
     return res
       .status(201)
@@ -58,13 +59,14 @@ export const loginUser = async (req, res) => {
       }
 
       let login = await bcrypt.compare(user.password, existingUser.password);
-      console.log("logcc", login);
       if (!login) {
         return res.status(400).json({ error: "Wrong Password" });
       }
       const data = { user: { id: existingUser.id } };
-      const authToken = jwt.sign(data, jwtSecret);
-      return res.json({status:201, success: true, authToken: authToken });
+      const authToken = jwt.sign(data, jwtSecret, {expiresIn:'1d'});
+      const userData = {name : existingUser.name, email:existingUser.email, jwt: authToken, userId:existingUser.userId}
+      console.log("logcc", existingUser);
+      return res.json({status:201, success: true, userData });
     } catch (error) {
       res.status(409).json({ message: error });
       console.log("error fetching the data in db");

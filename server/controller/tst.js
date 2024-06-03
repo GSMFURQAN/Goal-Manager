@@ -1,5 +1,5 @@
-import Todo from "../schema/todoListSchema.js";
-import moment from "moment";
+const moment = require('moment');
+const Todo = require('./models/todo'); // Adjust the path as needed
 
 export const getProgress = async (req, res) => {
   const params = req.query;

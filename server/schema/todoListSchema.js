@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const todoListSchema = new mongoose.Schema({
+  userId:String,
   title: String,
   note:String,
   dueDate:Date,
