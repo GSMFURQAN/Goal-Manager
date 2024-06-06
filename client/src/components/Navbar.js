@@ -166,9 +166,9 @@ export default function Navbar() {
           userId: account?.userId,
           bgImg: downloadURL,
         }).then(async () => {
-
-          sessionStorage.setItem('account', JSON.stringify({...account, bgImg:downloadURL}) )
-         
+            downloadURL &&
+            dispatch(selectView({ ...general, bgImg: downloadURL }));
+            setFileUploadProgress(false);
         }));
       // You can now use the downloadURL, e.g., set it in your state or send it to your backend
     } catch (error) {

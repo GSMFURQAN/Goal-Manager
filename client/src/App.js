@@ -35,7 +35,7 @@ function App() {
     <GlobalStyles
       styles={{
         body: {
-          backgroundImage: `url(${account?.bgImg})`,
+          backgroundImage: `url(${ generalState?.bgImg ? generalState?.bgImg : account?.bgImg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
