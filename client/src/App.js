@@ -54,8 +54,8 @@ function App() {
     boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
     border: '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '16px',
-    padding: theme.spacing(3),
-    margin: theme.spacing(3)
+    // padding: theme.spacing(3),
+    // margin: theme.spacing({xs:0.5, sm:0.5, md:3, lg:3, xl:3})
   }));
   
   return (
@@ -65,7 +65,7 @@ function App() {
       <CssBaseline />
       {globalStyles}
       <BrowserRouter>
-      <GlassPaper>
+      <GlassPaper sx={{margin:{xs:0.8, sm:3, md:3, lg:3, xl:3}, padding:{xs:0.2, sm:2, md:3, lg:3, xl:3}}} >
 
         <Navbar />
         <Routes>
