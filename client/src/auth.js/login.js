@@ -42,6 +42,7 @@ export default function Login() {
             severity: "success",
           });
           sessionStorage.setItem('account',JSON.stringify(res?.data?.userData))
+          window.location.reload()
           navigate('/')
         }else{
           setOpenSnack({

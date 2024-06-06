@@ -3,24 +3,19 @@ import axios from "axios";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 axios.defaults.withCredentials =true
-const userData = JSON.parse(sessionStorage.getItem('account'))
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return {
-    Authorization: `Bearer ${userData?.jwt}`
-  };
-};
+const userData = JSON.parse(sessionStorage?.getItem('account'))
 
 const generalSlice = createSlice({
   name: "general",
-  initialState: { dayView: "day", theme: true, id: "", action: '', dueDate:'' },
+  initialState: { dayView: "day", theme: true, id: "", action: '', dueDate:'',bgImg:'' },
   reducers: {
     selectView: (state, payload) => {
       state.dayView = payload.payload.dayView;
       state.theme = payload.payload.theme;
       state.id = payload.payload.id;
       state.action = payload.payload.action;
-      state.dueDate = payload.payload.dueDate
+      state.dueDate = payload.payload.dueDate;
+      state.bgImg = payload.payload.bgImg;
     },
   },
 });
@@ -40,8 +35,7 @@ const snackSlice = createSlice({
 export const getProgress =(params) =>async(dispatch)=>{
   dispatch(fetchDataStart())
   try {
-    const headers = getAuthHeaders();
-
+    const headers = userData.jwt && {Authorization: `Bearer ${userData?.jwt}`}
     const response =  await axios.get(apiUrl + `/progress?dayView=${params.dayView}&userId=${userData?.userId}`,{headers})
     dispatch(fetchDataSuccess(response.data))
   } catch (error) {

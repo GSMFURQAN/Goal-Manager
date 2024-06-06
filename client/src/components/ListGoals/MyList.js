@@ -26,9 +26,10 @@ const MyCard = () => {
   const general = useSelector((state) => state.general);
   const { data, loading, error } = useSelector((state) => state.goal);
   const dispatch = useDispatch();
+  
   useEffect(() => {
     dispatch(fetchData({ dayView: general?.dayView}));
-  }, [dispatch, general.dayView]);
+  }, [ general.dayView]);
 
   return (
     <Stack sx={{ width: {lg:"75%", xs:'100%'} , border:'2px solid gray', borderRadius:'12px', margin:'12px 0px'}}>
@@ -69,7 +70,7 @@ const MyCard = () => {
                         width={"20%"}
                         my={"60px"}
                       />
-                      <MyCards
+                      <MyMobileCard
                         todo={z}
                         general={general}
                         open={open}

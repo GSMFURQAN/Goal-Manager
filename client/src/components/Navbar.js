@@ -24,6 +24,7 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { selectView } from "../redux/generalSlice";
 import HistoryIcon from "@mui/icons-material/History";
 import {
+  CircularProgress,
   Divider,
   FormControl,
   Icon,
@@ -32,8 +33,16 @@ import {
   TextField,
 } from "@mui/material";
 import { fetchData } from "../redux/goalSlice";
-import { getTodos, updateTodo } from "../Apis/Apis";
+import {
+  getPreferences,
+  getTodos,
+  savePreferences,
+  updateTodo,
+} from "../Apis/Apis";
 import moment from "moment";
+import LogoutIcon from "@mui/icons-material/Logout";
+import WallpaperIcon from "@mui/icons-material/Wallpaper";
+import { uploadFile } from "./imageFolder/MediaUploader";
 export default function Navbar() {
   const general = useSelector((state) => state.general);
   const goal = useSelector((state) => state.goal);
@@ -41,25 +50,26 @@ export default function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorEl2, setAnchorEl2] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [searchtxt, setSearchtxt] = React.useState("");
+  const [searchtxt, setSearchtxt] = React.useState(null);
   const [Notifications, setNotifications] = React.useState([]);
   const { dayView } = useSelector((state) => state.general);
+  const [fileUploadProgress, setFileUploadProgress] = React.useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   let account = JSON?.parse(sessionStorage?.getItem("account"));
 
   React.useEffect(() => {
-    dispatch(fetchData({ searchtxt: searchtxt }));
+    searchtxt && dispatch(fetchData({ searchtxt: searchtxt }));
   }, [searchtxt]);
-
-  React.useEffect(() => {
-    getNotifications();
-  }, [goal]);
 
   const getNotifications = () => {
     getTodos({ viewed: "NO" }).then((res) => setNotifications(res?.data));
   };
+  // React.useMemo(() => {
+  //   getNotifications();
+  // }, [goal]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isNotificationOpen = Boolean(anchorEl2);
@@ -101,7 +111,7 @@ export default function Navbar() {
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={menuId}
@@ -111,12 +121,60 @@ export default function Navbar() {
         horizontal: "right",
       }}
       open={isMenuOpen}
-      onClose={handleMenuClose}
+      onClose={() => setAnchorEl(null)}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem>
+        <IconButton
+          onClick={() =>
+            dispatch(
+              selectView({ ...general, theme: !general.theme, bgImg: " " })
+            )
+          }
+          color="inherit"
+        >
+          {general.theme ? <Brightness7Icon /> : <Brightness4Icon />} &nbsp;
+        </IconButton>
+        <label
+          htmlFor="file-upload"
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <input
+            id="file-upload"
+            type="file"
+            style={{ display: "none" }}
+            onChange={(e) => handleFileUpload(e.target.files[0])}
+          />
+          <IconButton color="inherit" component="span">
+            {fileUploadProgress ? <CircularProgress size={24}/> : <WallpaperIcon />}
+          </IconButton>
+          &nbsp; Theme
+        </label>
+      </MenuItem>
+      <MenuItem sx={{ margin: "24px" }} onClick={handleMenuClose}>
+        <LogoutIcon /> &nbsp; Logout
+      </MenuItem>
     </Menu>
   );
+  const handleFileUpload = async (file) => {
+    setFileUploadProgress(true);
+    try {
+      const downloadURL = await uploadFile(file);
+      console.log("File uploaded successfully:", downloadURL);
+      // downloadURL && setGoalData({ ...goalData, image: downloadURL });
+      downloadURL &&
+        (await savePreferences({
+          userId: account?.userId,
+          bgImg: downloadURL,
+        }).then(async () => {
+
+          sessionStorage.setItem('account', JSON.stringify({...account, bgImg:downloadURL}) )
+         
+        }));
+      // You can now use the downloadURL, e.g., set it in your state or send it to your backend
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
   const notificationId = "primary-notification-account-menu";
   const renderNotificationMenu = (
     <Menu
@@ -179,14 +237,14 @@ export default function Navbar() {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails">
+        <IconButton size="large" >
           <Link to="/">
             <Badge color="error">
               <ViewDayIcon
                 style={
                   location.pathname === "/"
                     ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
-                    : { color: "white" }
+                    : {  color: general.theme ? "white" :'black'}
                 }
                 // style={{
                 //   color: location.pathname === "/" ? "cyan" : "white",
@@ -200,14 +258,14 @@ export default function Navbar() {
         <p>Goals List</p>
       </MenuItem>
       <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails">
+        <IconButton size="large" aria-label="calendar">
           <Link to={"/calendar"}>
             <Badge color="error">
               <CalendarMonthIcon
                 style={
                   location.pathname === "/calendar"
                     ? { color: "cyan", boxShadow: "0 0 30px 6px cyan" }
-                    : { color: "white" }
+                    : { color: general.theme ? "white" :'black'}
                 }
               />
             </Badge>
@@ -229,37 +287,25 @@ export default function Navbar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleNotificationsOpen}>
+
+      <MenuItem>
         <IconButton
-          onClick={() =>
-            dispatch(selectView({ ...general, theme: !general.theme }))
-          }
+          size="large"
           color="inherit"
         >
-          {general.theme ? <Brightness7Icon /> : <Brightness4Icon />}
+          <Link to="/timeLine">
+            <Badge color="error">
+              <HistoryIcon
+                style={
+                  location.pathname === "/timeLine"
+                    ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
+                    : {  color: general.theme ? "white" :'black'}
+                }
+              />{" "}
+            </Badge>
+          </Link>
         </IconButton>
-        <p>Theme</p>
-      </MenuItem>
-      <MenuItem>
-      <IconButton
-                  sx={{ margin: "0px 4px" }}
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Link to="/timeLine">
-                    <Badge color="error">
-                      <HistoryIcon
-                        style={
-                          location.pathname === "/timeLine"
-                            ? { color: "cyan", boxShadow: "0 0 30px 3px cyan" }
-                            : { color: "white" }
-                        }
-                      />{" "}
-                    </Badge>
-                  </Link>
-                </IconButton>
-                <p>Time Line</p>
+        <p>Time Line</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
@@ -391,24 +437,6 @@ export default function Navbar() {
                   </Link>
                 </IconButton>
 
-                <IconButton
-                  sx={{ margin: "0px 4px" }}
-                  size="large"
-                  aria-label="account of current user"
-                  color="inherit"
-                >
-                  <IconButton
-                    sx={{ margin: "0px 4px", ml: 1 }}
-                    onClick={() =>
-                      dispatch(
-                        selectView({ ...general, theme: !general.theme })
-                      )
-                    }
-                    color="inherit"
-                  >
-                    {general.theme ? <Brightness7Icon /> : <Brightness4Icon />}
-                  </IconButton>
-                </IconButton>
                 <IconButton
                   sx={{ margin: "0px 8px" }}
                   size="large"

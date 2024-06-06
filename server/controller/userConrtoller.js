@@ -2,6 +2,7 @@ import User from "../schema/userSchema.js";
 import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Preference from "../schema/preferencesSchema.js";
 
 const saltRounds = 10;
 const jwtSecret = "GoalManagerproject";
@@ -53,19 +54,18 @@ export const loginUser = async (req, res) => {
         return res.status(400).json({ error: errors?.errors?.[0].msg });
       }
       const existingUser = await User.findOne({ email: user.email });
-      console.log("tezxz", user, "-", existingUser);
       if (!existingUser) {
         return res.status(404).json({ error: "User not found" });
       }
-
+      
       let login = await bcrypt.compare(user.password, existingUser.password);
       if (!login) {
         return res.status(400).json({ error: "Wrong Password" });
       }
+      const userPref = await Preference.findOne({userId:existingUser?.userId})
       const data = { user: { id: existingUser.id } };
       const authToken = jwt.sign(data, jwtSecret, {expiresIn:'1d'});
-      const userData = {name : existingUser.name, email:existingUser.email, jwt: authToken, userId:existingUser.userId}
-      console.log("logcc", existingUser);
+      const userData = {name : existingUser.name, email:existingUser.email, jwt: authToken, userId:existingUser.userId, bgImg:userPref.bgImg}
       return res.json({status:201, success: true, userData });
     } catch (error) {
       res.status(409).json({ message: error });

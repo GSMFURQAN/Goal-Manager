@@ -71,3 +71,28 @@ export const deleteTodo = async(params)=>{
   }
 }
 
+export const savePreferences=async(params)=>{
+try{
+  return await axios.put(apiUrl + `/preferences`, params,{
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${userData?.jwt}`
+        }
+      })
+}catch(error){
+  console.log('Error uploading data')
+}
+}
+
+export const getPreferences=async(params)=>{
+  try {
+    return await axios.get(apiUrl + `/preferences?userId=${params}`,{
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${userData?.jwt}`
+          }
+        })
+  } catch (error) {
+    
+  }
+}

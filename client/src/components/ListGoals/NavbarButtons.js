@@ -6,7 +6,7 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import AddGoal from "./AddGoal";
 import { getTodos } from "../../Apis/Apis";
-const Navbar = ({ progressView, setProgressView }) => {
+const NavbarButtons = ({ progressView, setProgressView }) => {
   const [open, setOpen] = React.useState(false);
 
   const general = useSelector((state) => state.general);
@@ -14,9 +14,6 @@ const Navbar = ({ progressView, setProgressView }) => {
   const handleAddNewTodo = () => {
     setOpen(true);
   };
-  React.useEffect(() => {
-    getTodos({ viewed: false }).then((res) => console.log("nots", res?.data));
-  }, [general.dayView]);
 
   return (
     <div>
@@ -129,4 +126,4 @@ const Navbar = ({ progressView, setProgressView }) => {
   );
 };
 
-export default Navbar;
+export default NavbarButtons;

@@ -76,7 +76,7 @@ import {
                   {todo.title}
                 </Typography>
               </Stack>
-              <Typography  my={'auto'} fontSize={14}>
+              <Typography  my={'auto'} maxWidth={{xs:100,sm:200}} fontSize={14}>
                 {/* <Typography
                   fontWeight={"bold"}
                   display={"inline-block"}
@@ -90,8 +90,8 @@ my={'auto'}                >
             {/* <Divider /> */}
   
             <Stack
-            //   width={600}
-              // mt={0.5}
+              width={{xl:600, lg:600, md:600, sm:400, xs:300 }}
+              mt={0.5}
               sx={{
                
               }}
@@ -139,7 +139,7 @@ my={'auto'}                >
                 </Box> */}
               </Stack>
               <Stack display={"flex"} direction={"row"} spacing={{xs:2,sm:0.5}}>
-                <Button
+                {!todo.parentId && <Button
                   size="small"
                   variant="text"
                   onClick={() => {
@@ -156,7 +156,7 @@ my={'auto'}                >
                   sx={{ fontSize: "13px" }}
                 >
                   sub tasks
-                </Button>
+                </Button>}
                 <Button
                   variant="text"
                   size="small"

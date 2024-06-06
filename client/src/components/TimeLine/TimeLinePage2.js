@@ -24,81 +24,89 @@ import ScrollToBottom from "./ScrollToBottom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/goalSlice";
 import moment from "moment";
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { useNavigate } from "react-router-dom";
 
 export default function TimeLinePage2() {
   const dispatch = useDispatch();
-  
+  let account = JSON?.parse(sessionStorage?.getItem("account"));
+  const navigate = useNavigate();
   const goal = useSelector((state) => state.goal.data);
 
   React.useEffect(() => {
-    dispatch(fetchData({ major: true }));
+    if (account) {
+      dispatch(fetchData({ major: true }));
+    } else {
+      navigate("/");
+    }
   }, []);
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
   return (
     <>
-      <Timeline position="alternate">
-        {goal?.map((x, i) => (
-          <TimelineItem sx={{ padding: { xs: '0',         
-          sm: '0',         
-          md: '0 14%',} }} >
-            <TimelineOppositeContent
-              sx={{ m: "auto 0" }}
-              align="right"
-              variant="body1"
-              // color="
-            >
-              {moment(x.dueDate).format("DD MMMM, YYYY")}
-            </TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineConnector />
-              <TimelineDot>
-                <AutoAwesomeIcon/>
-              </TimelineDot>
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent p={2}>
-              <Card>
-                <CardActionArea>
-                  <CardMedia
-                    component="img"
-                    height="140px"
-                    image={x?.image }
-                    alt="green iguana"
-                  />
-                  <CardContent>
-                    <Stack
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems="center"
-                      direction={"column"}
-                    >
-                      <Typography variant="h5" component="div">
-                        {x.title}
-                      </Typography>
-
-                      <br />
-                      <Stack>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          // sx={{ display: "block" }}
-                          pl={"0px"}
-                        >
-                          {x.note}
+      <div
+      // style={{height:'76vh', overflow:'auto'}}
+      >
+        <Timeline position="alternate">
+          {goal?.map((x, i) => (
+            <TimelineItem sx={{ padding: { xs: "0", sm: "0", md: "0 14%" } }}>
+              <TimelineOppositeContent
+                sx={{ m: "auto 0" }}
+                align="right"
+                variant="body1"
+                // color="
+              >
+                {moment(x.dueDate).format("DD MMMM, YYYY")}
+              </TimelineOppositeContent>
+              <TimelineSeparator>
+                <TimelineConnector />
+                <TimelineDot>
+                  <AutoAwesomeIcon />
+                </TimelineDot>
+                <TimelineConnector />
+              </TimelineSeparator>
+              <TimelineContent p={2}>
+                <Card>
+                  <CardActionArea>
+                    <CardMedia
+                      component="img"
+                      height="140px"
+                      image={x?.image}
+                      alt="green iguana"
+                    />
+                    <CardContent>
+                      <Stack
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems="center"
+                        direction={"column"}
+                      >
+                        <Typography variant="h5" component="div">
+                          {x.title}
                         </Typography>
+
+                        <br />
+                        <Stack>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            // sx={{ display: "block" }}
+                            pl={"0px"}
+                          >
+                            {x.note}
+                          </Typography>
+                        </Stack>
                       </Stack>
-                    </Stack>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </TimelineContent>
-          </TimelineItem>
-        ))}
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </TimelineContent>
+            </TimelineItem>
+          ))}
+        </Timeline>
         <ScrollToBottom onScrollToBottom={() => fireConfetti()} />{" "}
-      </Timeline>
+      </div>
     </>
   );
 }

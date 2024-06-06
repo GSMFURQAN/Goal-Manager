@@ -10,6 +10,7 @@ import {
 import { getProgress } from "../controller/progressController.js";
 import multer from "multer";
 import { RegisterUser, fetchAccount, loginUser } from "../controller/userConrtoller.js";
+import { addPreferences, getPreferences } from "../controller/preferenceController.js";
 
 
 const jwtSecret = "GoalManagerproject";
@@ -42,11 +43,13 @@ const verifyToken = (req, res, next) => {
 
 router.get("/todos",verifyToken, getTodos);
 router.get("/progress",verifyToken, getProgress);
-router.put("/update-todo",verifyToken, upload.single('image'), updateTodo);
-router.post("/add-todo",verifyToken, upload.single("image"), addNewTodo);
-router.delete("/delete-todo/:userId/:id",verifyToken, deleteTodo);
 router.get('/account',verifyToken, fetchAccount)
+router.get('/preferences',verifyToken, getPreferences)
+router.delete("/delete-todo/:userId/:id",verifyToken, deleteTodo);
+router.post("/add-todo",verifyToken, upload.single("image"), addNewTodo);
 router.post('/register', [body('email').isEmail(),body('password','Password too small').isLength({min:5})], RegisterUser)
 router.post('/login',[body('email').isEmail(),body('password','Password too small').isLength({min:5})], loginUser)
+router.put("/update-todo",verifyToken, upload.single('image'), updateTodo);
+router.put("/preferences",verifyToken, addPreferences);
 
 export default router;

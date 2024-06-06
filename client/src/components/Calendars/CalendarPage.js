@@ -6,6 +6,7 @@ import { Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/goalSlice.js";
 import AddGoal from "../ListGoals/AddGoal.js";
+import MyDialog from "../../utilities/MyDialog.js";
 
 function CalendarPage() {
   // const allViews = Object.keys(Calendar.Views).map(k => Calendar.Views[k]);
@@ -18,6 +19,8 @@ function CalendarPage() {
   const [currentView, setCurrentView] = useState(Views.MONTH);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogContent, setDialogContent] = useState('');
 
   const [open, setOpen] = useState(false);
 
@@ -50,17 +53,17 @@ useEffect(() => {
   
   return (
     <>
-      <Stack mx={"10%"} mt={"3%"}>
+      <Stack mx={"10%"} mt={"2%"}>
         <Calendar
           localizer={localizer}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 500 }}
+          style={{ height: '460px' }}
           events={eventData}
           step={15}
           selectable
           views={["day","week", "month", "agenda"]}
-          onSelectEvent={(event) => alert(event.title)}
+          onSelectEvent={(event) => {setOpenDialog(true); setDialogContent(event)}}
           onSelectSlot={handleSelectSlot}
           onView={handleViewChange}
           defaultDate={new Date()}
@@ -73,6 +76,7 @@ useEffect(() => {
           // }
         />
       </Stack>
+    <MyDialog open={openDialog} setOpen={setOpenDialog} data={dialogContent}/>
       <AddGoal open={open} setOpen={setOpen} selectedDate={selectedDate}/>
     </>
   );

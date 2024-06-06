@@ -10,6 +10,6 @@ try {
    console.log('connected to todo')
 
 } catch (error) {
-    console.log('Error connecting to db')
+    console.log('Error connecting to db', error)
 }
 }
