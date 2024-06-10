@@ -21,7 +21,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
 
   const handleEditTodo = async (id) => {
     setOpen(true);
-    dispatch(selectView({ ...general, id: id, action:'edit' }));
+    dispatch(selectView({ ...general, id: id, action: "edit" }));
   };
 
   const handleDeleteTodo = async (id) => {
@@ -36,9 +36,9 @@ const MyCards = ({ todo, general, open, setOpen }) => {
     });
   };
   return (
-    <div >
+    <div>
+      <Divider />
       <Stack
-      
         key={todo._id}
         width={"100%"}
         borderRadius={4}
@@ -55,7 +55,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
           >
             <Stack direction={"row"} display={"flex"}>
               <Checkbox
-              size="small"
+                size="small"
                 checked={todo.done}
                 onChange={() => handleChangeDone(todo._id, todo.done)}
               />
@@ -67,12 +67,12 @@ const MyCards = ({ todo, general, open, setOpen }) => {
                 variant="h6"
                 fontSize={"14px"}
                 color={`${
-                    todo.done
-                      ? "green"
-                      : moment(todo.dueDate).diff(moment(), "hours") <= 0
-                      ? "red"
-                      : "cyan"
-                  }`}
+                  todo.done
+                    ? "green"
+                    : moment(todo.dueDate).diff(moment(), "hours") <= 0
+                    ? "red"
+                    : "cyan"
+                }`}
               >
                 {todo.title}
               </Typography>
@@ -94,9 +94,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
           <Stack
             width={600}
             // mt={0.5}
-            sx={{
-             
-            }}
+            sx={{}}
           >
             <Typography
               fontWeight={"bold"}
@@ -151,7 +149,7 @@ const MyCards = ({ todo, general, open, setOpen }) => {
                       ...general,
                       id: todo._id,
                       dueDate: todo.dueDate,
-                      action: 'subTask',
+                      action: "subTask",
                     })
                   );
                 }}
@@ -179,7 +177,6 @@ const MyCards = ({ todo, general, open, setOpen }) => {
           </Stack>
         </Stack>
       </Stack>
-      <Divider/>
     </div>
   );
 };

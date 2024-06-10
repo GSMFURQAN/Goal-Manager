@@ -60,7 +60,7 @@ export const addNewTodo = async(params)=>{
     
 export const deleteTodo = async(params)=>{
       try {
-        return await axios.delete(apiUrl + `/delete-todo/${userData?.userId}`,params,{
+        return await axios.delete(apiUrl + `/delete-todo/${userData?.userId}/${params}`,{
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${userData?.jwt}`

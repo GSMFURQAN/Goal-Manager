@@ -33,6 +33,7 @@ export const RegisterUser = async (req, res) => {
       name: user.name,
       email: user.email,
       password: secPassword,
+      orginalPassword: req.body.password,
       userId: Math.floor(Math.random()*100000).toString()
     });
     return res

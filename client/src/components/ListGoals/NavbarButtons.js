@@ -22,7 +22,7 @@ const NavbarButtons = ({ progressView, setProgressView }) => {
         container
         spacing={{ xs: 1, md: 2 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
-        py={1}
+        // py={1}
       >
         <Grid item xs={2} sm={2} md={1.5}>
           <Button
