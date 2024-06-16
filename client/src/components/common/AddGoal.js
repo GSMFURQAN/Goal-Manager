@@ -168,10 +168,10 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
     <div>
       {" "}
       <Modal
-        open={open}
+        open={general.addGoalOpen}
         onClose={() => {
           setOpen(false);
-          dispatch(selectView({ ...general, id: "", action: "" }));
+          dispatch(selectView({ ...general, id: "", action: "" , addGoalOpen:false}));
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -246,8 +246,7 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
                   <Button
                     variant="outlined"
                     onClick={() => {
-                      setOpen(false);
-                      dispatch(selectView({ ...general, id: "", action: "" }));
+                      dispatch(selectView({ ...general, id: "", action: "", addGoalOpen:false }));
                       setGoalData({});
                     }}
                     color="error"

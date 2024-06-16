@@ -2,12 +2,21 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const apiUrl = process.env.REACT_APP_API_URL;
 
-axios.defaults.withCredentials =true
-const userData = JSON.parse(sessionStorage?.getItem('account'))
+axios.defaults.withCredentials = true;
+const userData = JSON.parse(sessionStorage?.getItem("account"));
 
 const generalSlice = createSlice({
   name: "general",
-  initialState: { dayView: "day", theme: true, id: "", action: '', dueDate:'',bgImg:'' },
+  initialState: {
+    dayView: "day",
+    theme: true,
+    id: "",
+    action: "",
+    dueDate: "",
+    bgImg: "",
+    addGoalOpen: false,
+    progressOpen: true,
+  },
   reducers: {
     selectView: (state, payload) => {
       state.dayView = payload.payload.dayView;
@@ -16,33 +25,39 @@ const generalSlice = createSlice({
       state.action = payload.payload.action;
       state.dueDate = payload.payload.dueDate;
       state.bgImg = payload.payload.bgImg;
+      state.addGoalOpen = payload.payload.addGoalOpen;
+      state.progressOpen = payload.payload.progressOpen;
     },
   },
 });
 const snackSlice = createSlice({
   name: "snack",
-  initialState: { severity: "", message: '',open:false  },
+  initialState: { severity: "", message: "", open: false },
   reducers: {
     selectSnack: (state, payload) => {
       state.severity = payload.payload.severity;
       state.message = payload.payload.message;
       state.open = payload.payload.open;
-    
     },
   },
 });
 
-export const getProgress =(params) =>async(dispatch)=>{
-  dispatch(fetchDataStart())
+export const getProgress = (params) => async (dispatch) => {
+  dispatch(fetchDataStart());
   try {
-    const headers = userData.jwt && {Authorization: `Bearer ${userData?.jwt}`}
-    const response =  await axios.get(apiUrl + `/progress?dayView=${params.dayView}&userId=${userData?.userId}`,{headers})
-    dispatch(fetchDataSuccess(response.data))
+    const headers = userData.jwt && {
+      Authorization: `Bearer ${userData?.jwt}`,
+    };
+    const response = await axios.get(
+      apiUrl + `/progress?dayView=${params.dayView}&userId=${userData?.userId}`,
+      { headers }
+    );
+    dispatch(fetchDataSuccess(response.data));
   } catch (error) {
-      console.log('Error fetching data')
-      dispatch(fetchDataFailure(error.message))
+    console.log("Error fetching data");
+    dispatch(fetchDataFailure(error.message));
   }
-}
+};
 
 const progressSlice = createSlice({
   name: "progress",
@@ -65,5 +80,10 @@ const progressSlice = createSlice({
 
 export const { selectView } = generalSlice.actions;
 export const { selectSnack } = snackSlice.actions;
-export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } = progressSlice.actions;
-export const reducers = {progressSlice: progressSlice.reducer, generalSlice: generalSlice.reducer, snackSlice:snackSlice.reducer};
+export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } =
+  progressSlice.actions;
+export const reducers = {
+  progressSlice: progressSlice.reducer,
+  generalSlice: generalSlice.reducer,
+  snackSlice: snackSlice.reducer,
+};

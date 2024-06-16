@@ -6,25 +6,18 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import AddGoal from "../common/AddGoal";
 import { getTodos } from "../../Apis/Apis";
-const NavbarButtons = ({ progressView, setProgressView }) => {
+const NavbarButtons2 = ({ progressView, setProgressView }) => {
   const [open, setOpen] = React.useState(false);
-
+const dispatch = useDispatch()
   const general = useSelector((state) => state.general);
-  const dispatch = useDispatch();
   const handleAddNewTodo = () => {
+    dispatch(selectView({...general, addGoalOpen:true}))
     setOpen(true);
   };
 
   return (
-    <div>
-      {" "}
-      <Grid
-        container
-        spacing={{ xs: 1, md: 2 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-        // py={1}
-      >
-        <Grid item xs={2} sm={2} md={1.5}>
+    <Stack display={{ sm: "none",xs:"none",md:'none', lg: "flex"}} direction={'column'} spacing={4} my={4} mr={4}>
+   
           <Button
             size="small"
             fullWidth
@@ -35,21 +28,17 @@ const NavbarButtons = ({ progressView, setProgressView }) => {
           >
             Previous
           </Button>{" "}
-        </Grid>
-        <Grid item xs={2} sm={2} md={1.5}>
+       
           <Button
             size="small"
-            fullWidth="12px"
             variant={general.dayView === "day" ? "contained" : "outlined"}
             onClick={() => dispatch(selectView({ ...general, dayView: "day" }))}
           >
             Today
           </Button>{" "}
-        </Grid>{" "}
-        <Grid item xs={2} sm={2} md={1.5}>
+   
           <Button
             size="small"
-            fullWidth="12px"
             variant={general.dayView === "tomorrow" ? "contained" : "outlined"}
             onClick={() =>
               dispatch(selectView({ ...general, dayView: "tomorrow" }))
@@ -57,12 +46,9 @@ const NavbarButtons = ({ progressView, setProgressView }) => {
           >
             Tomorrow
           </Button>{" "}
-        </Grid>
-      
-        <Grid item xs={2} sm={2} md={1.5}>
+       
           <Button
             size="small"
-            fullWidth="12px"
             variant={general.dayView === "future" ? "contained" : "outlined"}
             onClick={() =>
               dispatch(selectView({ ...general, dayView: "future" }))
@@ -70,18 +56,15 @@ const NavbarButtons = ({ progressView, setProgressView }) => {
           >
             Future
           </Button>{" "}
-        </Grid>{" "}
-        <Grid item xs={2} sm={2} md={1.5}>
+  
           <Button
             size="small"
-            fullWidth="12px"
             variant={general.dayView === "all" ? "contained" : "outlined"}
             onClick={() => dispatch(selectView({ ...general, dayView: "all" }))}
             >
             All
-          </Button>{" "}
-        </Grid>
-        <Grid item xs={2} sm={2} md={1.5}>
+            </Button>
+            <Hidden only={[ "md", "lg", "xl"]}>
           <Button
             size="small"
             variant="contained"
@@ -94,9 +77,6 @@ const NavbarButtons = ({ progressView, setProgressView }) => {
           >
             Add Goal
           </Button>
-        </Grid>
-        <Hidden only={[ "md", "lg", "xl"]}>
-          <Grid item xs={2} sm={2} md={1.5}>
             <Button
               variant="contained"
               color="info"
@@ -107,13 +87,10 @@ const NavbarButtons = ({ progressView, setProgressView }) => {
             >
               {!progressView ? "See" : "Hide"} Progress
             </Button>
-          </Grid>
         </Hidden>
-        <Grid container></Grid>
         <AddGoal open={open} setOpen={setOpen} />
-      </Grid>
-    </div>
+    </Stack>
   );
 };
 
-export default NavbarButtons;
+export default NavbarButtons2;

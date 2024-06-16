@@ -20,8 +20,7 @@ const MyMobileCard = ({ todo, general, open, setOpen }) => {
   const [selectedId, setSelectedId] = React.useState();
 
   const handleEditTodo = async (id) => {
-    setOpen(true);
-    dispatch(selectView({ ...general, id: id, action: "edit" }));
+    dispatch(selectView({ ...general, id: id, action: "edit", addGoalOpen:true }));
   };
 
   const handleDeleteTodo = async (id) => {

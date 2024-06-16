@@ -16,7 +16,7 @@ import { deleteTodo, updateTodo } from "../../Apis/Apis";
 import Timer from "../../utilities/Timer";
 import { useDispatch, useSelector } from "react-redux";
 import { getProgress, selectView } from "../../redux/generalSlice";
-import AddGoal from "./AddGoal";
+import AddGoal from "../common/AddGoal";
 import LinearTimer from "../../utilities/LinearTimer";
 import MyCards from "./MyCards";
 import MyMobileCard from "./MyMobileCard";
@@ -33,14 +33,13 @@ const MyCard = () => {
 
   return (
     <Stack sx={{ width: {lg:"75%", xs:'100%'} , border:'2px solid gray', borderRadius:'12px', margin:'8px 0px'}}>
-      <Stack my={1} px={1} sx={{ overflowY: "auto", maxHeight: '64vh' }}>
-        {!data ? (
+      <Stack my={1} px={1} sx={{ overflowY: "auto", maxHeight: '68vh' }}>
+        {loading ? (
           <Stack m={'auto'}>
           <CircularProgress />
             </Stack> 
         ) : (
-          data
-            .filter((x) => x.parentId == "")
+          data?.filter((x) => x.parentId == "")
             .map((todo) => (
               <>
                 <MyMobileCard

@@ -21,7 +21,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import { selectView } from "../redux/generalSlice";
 import HistoryIcon from "@mui/icons-material/History";
 import {
   CircularProgress,
@@ -32,18 +31,16 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { fetchData } from "../redux/goalSlice";
-import {
-  getPreferences,
-  getTodos,
-  savePreferences,
-  updateTodo,
-} from "../Apis/Apis";
+
 import moment from "moment";
 import LogoutIcon from "@mui/icons-material/Logout";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
-import { uploadFile } from "./imageFolder/MediaUploader";
-export default function Navbar() {
+import { uploadFile } from "../imageFolder/MediaUploader";
+import { fetchData } from "../../redux/goalSlice";
+import { getPreferences, getTodos, savePreferences, updateTodo } from "../../Apis/Apis";
+import { selectView } from "../../redux/generalSlice";
+import SideDrawer from "./SideDrawer";
+export default function Navbar({progressView,setProgressView}) {
   const general = useSelector((state) => state.general);
   const goal = useSelector((state) => state.goal);
   const dispatch = useDispatch();
@@ -54,6 +51,7 @@ export default function Navbar() {
   const [Notifications, setNotifications] = React.useState([]);
   const { dayView } = useSelector((state) => state.general);
   const [fileUploadProgress, setFileUploadProgress] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -330,6 +328,7 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+        <MenuIcon onClick={()=>setOpen(true)} sx={{ display: { xs: "flex", sm:'flex',md: "flex",lg:'none' }, mx:'8px' }}/>
           <img
             src="goal.png"
             width={"28px"}
@@ -471,6 +470,7 @@ export default function Navbar() {
           )}
         </Toolbar>
       </AppBar>
+      <SideDrawer open={open} setOpen={setOpen} progressView={progressView} setProgressView={setProgressView}/>
       {renderMobileMenu}
       {renderMenu}
       {renderNotificationMenu}

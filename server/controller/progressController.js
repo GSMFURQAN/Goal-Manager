@@ -10,26 +10,22 @@ export const getProgress = async (req, res) => {
     const projection = { done: 1, dueDate: 1 };
 
     if (params.dayView === "all") {
-      progress = await Todo.find(query, projection);
+      progress = await Todo.find(query, projection).sort({ dueDate: -1 });
     } else if (params.dayView === "day") {
-      query.dueDate = { $lt: moment().endOf("day").toDate() };
-      progress = await Todo.find(query, projection);
-    } else if (params.dayView === "month") {
       query.dueDate = {
         $gt: moment().startOf("day").toDate(),
-        $lt: moment().endOf("month").toDate(),
+        $lt: moment().endOf("day").toDate(),
       };
       progress = await Todo.find(query, projection);
-    } else if (params.dayView === "year") {
+    } else if (params.dayView === "tomorrow") {
       query.dueDate = {
-        $gt: moment().add(1, "month").startOf("month").toDate(),
-        $lt: moment().endOf("year").toDate(),
+        $gt: moment().add(1, "day").startOf("day").toDate(),
+        $lt: moment().add(1, "day").endOf("day").toDate(),
       };
       progress = await Todo.find(query, projection);
     } else if (params.dayView === "future") {
       query.dueDate = {
-        $gt: moment().add(1, "year").startOf("year").toDate(),
-        $lt: moment().endOf("year").toDate(),
+        $gt: moment().add(2, "day").startOf("day").toDate(),
       };
       progress = await Todo.find(query, projection);
     } else if (params.dayView === "previous") {

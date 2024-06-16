@@ -1,6 +1,7 @@
 import {
   Alert,
   Button,
+  CircularProgress,
   Snackbar,
   Stack,
   TextField,
@@ -26,41 +27,44 @@ export default function Login() {
     severity: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (sessionStorage.getItem("account")) {
       navigate("/");
     }
   }, []);
   const handleClick = () => {
-    loginUser(details)
-      .then((res) => {
-        if (res?.data?.status == 201) {
-          setOpenSnack({
-            ...openSnack,
-            open: true,
-            message: 'Login successful',
-            severity: "success",
-          });
-          sessionStorage.setItem('account',JSON.stringify(res?.data?.userData))
-          window.location.reload()
-          navigate('/')
-        }else{
-          setOpenSnack({
-            ...openSnack,
-            open: true,
-            message: res?.response?.data?.error,
-            severity: "error",
-          });
-        
-        }
-      })
-  }
-    
+    setLoading(true);
+    loginUser(details).then((res) => {
+      if (res?.data?.status == 201) {
+        setOpenSnack({
+          ...openSnack,
+          open: true,
+          message: "Login successful",
+          severity: "success",
+        });
+        setLoading(false);
+        sessionStorage.setItem("account", JSON.stringify(res?.data?.userData));
+        window.location.reload();
+        navigate("/");
+      } else {
+        setOpenSnack({
+          ...openSnack,
+          open: true,
+          message: res?.response?.data?.error || "Login Failed",
+          severity: "error",
+        });
+        setLoading(false);
+      }
+    });
+  };
+
   return (
     <div>
-      <Stack display='flex' direction={"column"} alignItems={'center'} mt={8}>
+      <Stack display="flex" direction={"column"} alignItems={"center"} mt={8}>
         <Typography variant="h5" fontWeight={"bold"} m={"auto"}>
-          Login
+          Login{" "}
         </Typography>
         <TextField
           size="sm"
@@ -84,31 +88,37 @@ export default function Login() {
             setDetails({ ...details, [event.target.name]: event.target.value })
           }
         />
-        <Button
-          variant="contained"
-          sx={{ width: "200px", marginTop: "34px" }}
-          size="md"
-          onClick={() => handleClick()}
-        >
-          Login
-        </Button>
-        <br/>
-        <Button  variant="text" onClick={()=>navigate('/signup')}>New User ?</Button>
-      </Stack>
-        <Snackbar
-          open={openSnack.open}
-          autoHideDuration={3000}
-          onClose={() => setOpenSnack({ ...openSnack, open: false })}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-          <Alert
-            onClose={() => setOpenSnack({ ...openSnack, open: false })}
-            severity={openSnack.severity}
-            sx={{ width: "100%" }}
+        {loading ? (
+          <CircularProgress  sx={{margin:'12px'}}/>
+        ) : (
+          <Button
+            variant="contained"
+            sx={{ width: "200px", marginTop: "34px" }}
+            size="md"
+            onClick={() => handleClick()}
           >
-            {openSnack.message}
-          </Alert>
-        </Snackbar>
+            Login
+          </Button>
+        )}
+        <br />
+        <Button variant="text" onClick={() => navigate("/signup")}>
+          New User ?
+        </Button>
+      </Stack>
+      <Snackbar
+        open={openSnack.open}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnack({ ...openSnack, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setOpenSnack({ ...openSnack, open: false })}
+          severity={openSnack.severity}
+          sx={{ width: "100%" }}
+        >
+          {openSnack.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

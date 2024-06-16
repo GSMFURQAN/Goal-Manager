@@ -1,6 +1,8 @@
 import Todo from "../schema/todoListSchema.js";
 import { ObjectId } from "mongodb";
 import moment from "moment";
+import { sendGoalAddedEmail } from "../services/emailService.js";
+import User from "../schema/userSchema.js";
 
  
 
@@ -77,30 +79,22 @@ export const getTodos = async (req, res) => {
           $lt: moment().endOf("day").toDate()
         }
       }).sort({ dueDate: -1 });
-    } else if (params.dayView === "month") {
+    } else if (params.dayView === "tomorrow") {
       all = await Todo.find({
         ...userIdCondition,
         dueDate: {
-          $gt: moment().startOf("day").toDate(),
-          $lt: moment().endOf("month").toDate()
+          $gt: moment().add(1,'day').startOf("day").toDate(),
+          $lt: moment().add(1,'day').endOf("day").toDate()
         }
       }).sort({ dueDate: 1 });
-    } else if (params.dayView === "year") {
-      all = await Todo.find({
-        ...userIdCondition,
-        dueDate: {
-          $gt: moment().add(1, "month").startOf("month").toDate(),
-          $lt: moment().endOf("year").toDate()
-        }
-      }).sort({ dueDate: -1 });
     } else if (params.dayView === "future") {
       all = await Todo.find({
         ...userIdCondition,
         dueDate: {
-          $gt: moment().add(1, "year").startOf("year").toDate(),
-          $lt: moment().endOf("year").toDate()
+          $gt: moment().add(2,'day').startOf("day").toDate(),
         }
-      }).sort({ dueDate: -1 });
+      }).sort({ dueDate: 1 });
+   
     } else if (params.dayView === "previous") {
       all = await Todo.find({
         ...userIdCondition,
@@ -149,8 +143,10 @@ export const updateTodo = async (req, res) => {
 
 export const addNewTodo = async (req, res) => {
   const todo = req.body;
-  console.log('daxz', todo)
   const newTodo = new Todo(todo);
+  const userDetails =await User.findOne({userId:todo.userId})
+  // console.log('daxz', todo, name)
+  todo.major && sendGoalAddedEmail(userDetails.email, userDetails.name, todo.title,  todo.dueDate, todo.note)
   try {
     const result = await newTodo.save();
     res.status(201).json(result);

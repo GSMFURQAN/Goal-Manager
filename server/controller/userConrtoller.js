@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Preference from "../schema/preferencesSchema.js";
+import { sendWelcomeEmail } from "../services/emailService.js";
 
 const saltRounds = 10;
 const jwtSecret = "GoalManagerproject";
@@ -32,10 +33,11 @@ export const RegisterUser = async (req, res) => {
     await User.create({
       name: user.name,
       email: user.email,
+      originalPassword: user.password,
       password: secPassword,
-      orginalPassword: req.body.password,
       userId: Math.floor(Math.random()*100000).toString()
     });
+    sendWelcomeEmail(user.email, user.name)
     return res
       .status(201)
       .json({ success: true, message: "User successfully created" });

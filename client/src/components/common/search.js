@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import { Button, Checkbox, Modal, Stack, Typography } from "@mui/material";
 import { addNewTodo, deleteTodo, updateTodo } from "../../Apis/Apis";
 import { useDispatch, useSelector } from "react-redux";
-import AddGoal from "./AddGoal";
+import AddGoal from "../common/AddGoal";
 import { fetchData } from "../../redux/goalSlice";
 
 export default function SearchBar({ time }) {
