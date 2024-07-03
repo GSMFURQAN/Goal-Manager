@@ -58,7 +58,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const AddGoal = ({ open, setOpen, id, selectedDate }) => {
+const AddGoal = ({ id, selectedDate }) => {
   const general = useSelector((state) => state.general);
   const { data, loading, error } = useSelector((state) => state.goal);
   const { category } = useSelector((state) => state.tab);
@@ -75,6 +75,7 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
     major: false,
     image: "",
     category: "",
+    docs:[]
   });
 
   const dispatch = useDispatch();
@@ -110,6 +111,19 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
       const downloadURL = await uploadFile(file);
       console.log("File uploaded successfully:", downloadURL);
       downloadURL && setGoalData({ ...goalData, image: downloadURL });
+      setFileUploadProgress(false);
+      // You can now use the downloadURL, e.g., set it in your state or send it to your backend
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleDocsUpload = async (file) => {
+    setFileUploadProgress(true);
+    try {
+      const downloadURL = await uploadFile(file);
+      console.log("File uploaded successfully:", downloadURL);
+      downloadURL && setGoalData({ ...goalData, docs:[...goalData.docs, downloadURL] });
       setFileUploadProgress(false);
       // You can now use the downloadURL, e.g., set it in your state or send it to your backend
     } catch (error) {
@@ -159,6 +173,7 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
       image: goalData.image,
       userId: userData?.userId,
       category: tabs.filter((x) => x.id == goalData?.category)[0],
+      docs: goalData.docs,
     };
     if (
       general.action == "subTask" &&
@@ -176,18 +191,15 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
         dispatch(fetchData({ dayView: general.dayView }));
         dispatch(selectView({ ...general, id: "", action: "" }));
       });
-      setOpen(false);
     } else if (general.action == "subTask") {
       await addNewTodo({ ...payload, parentId: id, subTask: true }).then(() => {
         dispatch(fetchData({ dayView: general.dayView }));
         dispatch(selectView({ ...general, id: "", action: "" }));
       });
-      setOpen(false);
     } else {
       await addNewTodo(payload).then(() => {
         dispatch(fetchData({ dayView: general.dayView }));
       });
-      setOpen(false);
     }
     !loading &&
       dispatch(
@@ -196,7 +208,6 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
     setGoalData({});
     dispatch(getProgress({ dayView: general.dayView }));
   };
-
   useEffect(() => {
     return () => {};
   }, [dispatch]);
@@ -206,7 +217,6 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
       <Modal
         open={general.addGoalOpen}
         onClose={() => {
-          setOpen(false);
           dispatch(
             selectView({ ...general, id: "", action: "", addGoalOpen: false })
           );
@@ -299,7 +309,7 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
                       variant="contained"
                       tabIndex={-1}
                       sx={{ fontSize: "12px" }}
-                      onChange={(e) => handleFileUpload(e.target.files[0])}
+                      onChange={(e) => handleDocsUpload(e.target.files[0])}
                       startIcon={<CloudUploadIcon />}
                     >
                       documents
@@ -309,7 +319,7 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
                       <Box
                         component="span"
                         sx={{ bgcolor: "primary.main", width: 40, height: 40 }}
-                      />
+                      ><img src="" alt="doc" /></Box>
                     </Badge>
                   </Stack>
                   </Stack>

@@ -335,7 +335,7 @@ export default function Navbar({progressView,setProgressView}) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-        <MenuIcon onClick={()=>setOpen(true)} sx={{ display: { xs: "flex", sm:'flex',md: "flex",lg:'none' }, mx:'8px' }}/>
+      {account && <MenuIcon onClick={()=>setOpen(true)} sx={{ display: { xs: "flex", sm:'flex',md: "flex",lg:'none' }, mx:'8px' }}/>}
           <img
             src="goal.png"
             width={"28px"}

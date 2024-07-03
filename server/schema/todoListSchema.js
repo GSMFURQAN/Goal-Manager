@@ -13,6 +13,7 @@ const todoListSchema = new mongoose.Schema({
   image: String,
   major: Boolean,
   category: { id: String, label: String },
+  docs:[]
 });
 
 const todo = mongoose.model("goals", todoListSchema);

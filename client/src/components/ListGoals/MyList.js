@@ -22,34 +22,36 @@ import MyCards from "./MyCards";
 import MyMobileCard from "./MyMobileCard";
 
 const MyCard = () => {
-  const [open, setOpen] = React.useState(false);
   const general = useSelector((state) => state.general);
-  const {category} = useSelector((state) => state.tab);
+  const { category } = useSelector((state) => state.tab);
   const { data, loading, error } = useSelector((state) => state.goal);
 
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
-    dispatch(fetchData({ dayView: general?.dayView}));
-  }, [ general.dayView, category ]);
-  
+    dispatch(fetchData({ dayView: general?.dayView }));
+  }, [general.dayView, category]);
+
   return (
-    <Stack sx={{ width: {lg:"100%", xs:'100%'} , border:'2px solid gray', borderRadius:'12px', margin:'8px 0px'}}>
-      <Stack my={1} px={1} sx={{ overflowY: "auto", maxHeight: '64vh' }}>
+    <Stack
+      sx={{
+        width: { lg: "100%", xs: "100%" },
+        border: "2px solid gray",
+        borderRadius: "12px",
+        margin: "8px 0px",
+      }}
+    >
+      <Stack my={1} px={1} sx={{ overflowY: "auto", maxHeight: "64vh" }}>
         {loading ? (
-          <Stack m={'auto'}>
-          <CircularProgress />
-            </Stack> 
+          <Stack m={"auto"}>
+            <CircularProgress />
+          </Stack>
         ) : (
-          data?.filter((x) => x?.parentId == "" && x.category?.id == category?.id)
+          data
+            ?.filter((x) => x?.parentId == "" && x.category?.id == category?.id)
             .map((todo) => (
               <>
-                <MyMobileCard
-                  todo={todo}
-                  general={general}
-                  open={open}
-                  setOpen={setOpen}
-                />
+                <MyMobileCard todo={todo} />
                 {/* ------------------------------------------------------------------------------- */}
                 {data
                   .filter((x) => x.parentId == todo._id)
@@ -71,19 +73,14 @@ const MyCard = () => {
                         width={"20%"}
                         my={"60px"}
                       />
-                      <MyMobileCard
-                        todo={z}
-                        general={general}
-                        open={open}
-                        setOpen={setOpen}
-                      />
+                      <MyMobileCard todo={z} />
                     </Stack>
                   ))}
               </>
             ))
         )}
       </Stack>
-      <AddGoal open={open} setOpen={setOpen} id={general.id} />
+      <AddGoal id={general.id} />
     </Stack>
   );
 };

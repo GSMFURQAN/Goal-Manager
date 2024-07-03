@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Checkbox,
@@ -7,19 +8,20 @@ import {
   Typography,
 } from "@mui/material";
 import moment from "moment";
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/goalSlice";
 import { selectView } from "../../redux/generalSlice";
 import { deleteTodo, updateTodo } from "../../Apis/Apis";
 import { showTime } from "../../utilities/utils";
 import LinearTimer from "../../utilities/LinearTimer";
 import { getProgress } from "../../redux/donutSlice";
+import ImageGrid from "../common/ImageGrid";
 
-const MyMobileCard = ({ todo, general, open, setOpen }) => {
+const MyMobileCard = ({ todo}) => {
+  const general = useSelector((state)=>state.general)
   const dispatch = useDispatch();
   const [selectedId, setSelectedId] = React.useState();
-
   const handleEditTodo = async (id) => {
     dispatch(
       selectView({ ...general, id: id, action: "edit", addGoalOpen: true })
@@ -76,7 +78,7 @@ const MyMobileCard = ({ todo, general, open, setOpen }) => {
               />
               <Typography
                 my={"auto"}
-                sx={{
+                style={{
                   textDecoration: todo.done ? "line-through" : "capitalize",
                 }}
                 variant="h6"
@@ -110,9 +112,11 @@ my={'auto'}                >
           {/* <Divider /> */}
 
           <Stack
-            width={{ xl: 600, lg: 520, md: 600, sm: 400, xs: 300 }}
+            // width={{ xl: 600, lg: 520, md: 520, sm: 400, xs: 300 }}
             mt={0.5}
-            sx={{}}
+            pr={3}
+          direction={'row'}
+          justifyContent={'space-between'}
           >
             <Typography
               fontWeight={"bold"}
@@ -123,6 +127,16 @@ my={'auto'}                >
               Note : &nbsp; {todo.note}
             </Typography>{" "}
             {/* <Timer daysLeft={moment(todo.dueDate).diff(moment(), "days")}/> */}
+           {todo.docs.length > 0 && <Badge badgeContent={`+ ${todo.docs.length -1}`} color="primary">
+              <img
+              style={{borderRadius:'12px'}}
+                src={todo.docs[0]}
+                width={"40rem"}
+                height={"40rem"}
+                alt="doc"
+                onClick={()=>dispatch(selectView({...general, imageGridModal : true}))}
+              />
+            </Badge>}
           </Stack>
           <Stack
             display={"flex"}
@@ -190,6 +204,7 @@ my={'auto'}                >
             </Stack>
           </Stack>
         </Stack>
+        <ImageGrid media={todo.docs} />
       </Stack>
     </div>
   );

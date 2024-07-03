@@ -1,5 +1,6 @@
 import {
   Alert,
+  Box,
   Button,
   CircularProgress,
   Snackbar,
@@ -61,14 +62,14 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <Stack display="flex" direction={"column"} alignItems={"center"} mt={8}>
+    <Box border={1} borderRadius={6} width={{xs:'80%',md:'460px', lg:'460px'}} boxShadow={4} m={'auto'} my={4} p={{xs:1, lg:4,md:4}}>
+      <Stack display="flex" direction={"column"} alignItems={"center"} mt={4}>
         <Typography variant="h5" fontWeight={"bold"} m={"auto"}>
           Login{" "}
         </Typography>
         <TextField
           size="sm"
-          sx={{ width: "360px", marginTop: "18px" }}
+          sx={{ width: {xs:'80%',md:'360px', lg:'360px'}, marginTop: "18px" }}
           name="email"
           label="Email"
           variant="outlined"
@@ -79,7 +80,7 @@ export default function Login() {
         />
         <TextField
           size="sm"
-          sx={{ width: "360px", marginTop: "18px" }}
+          sx={{ width: {xs:'80%',md:'360px', lg:'360px'}, marginTop: "18px" }}
           name="password"
           label="password"
           variant="outlined"
@@ -93,7 +94,7 @@ export default function Login() {
         ) : (
           <Button
             variant="contained"
-            sx={{ width: "200px", marginTop: "34px" }}
+            sx={{ width: {xs:'60%',md:'180px', lg:'180px'}, marginTop: "34px" }}
             size="md"
             onClick={() => handleClick()}
           >
@@ -119,6 +120,6 @@ export default function Login() {
           {openSnack.message}
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 }
