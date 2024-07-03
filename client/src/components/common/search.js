@@ -22,7 +22,6 @@ export default function SearchBar({ time }) {
   
   React.useEffect(()=>{
     dispatch(fetchData({searchtxt:searchtxt, dayView:dayView}))
-    console.log('cde',data)
   },[searchtxt])
 
   return (

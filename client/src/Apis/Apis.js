@@ -34,7 +34,21 @@ export const updateTodo = async(params)=>{
   try {
     return  await axios.put(apiUrl + `/update-todo`, params,{
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData?.jwt}`
+      }
+    })
+  } catch (error) {
+    console.log('Error updating data')
+  }
+}
+
+export const updateMany = async(params)=>{
+  params = {...params, userId:userData?.userId}
+  try {
+    return  await axios.put(apiUrl + `/update-many`, params,{
+      headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userData?.jwt}`
       }
     })
@@ -48,7 +62,7 @@ export const addNewTodo = async(params)=>{
   try {
     return await axios.post(apiUrl + `/add-todo`, params,{
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userData?.jwt}`
           }
         })
@@ -61,6 +75,19 @@ export const addNewTodo = async(params)=>{
 export const deleteTodo = async(params)=>{
       try {
         return await axios.delete(apiUrl + `/delete-todo/${userData?.userId}/${params}`,{
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${userData?.jwt}`
+          }
+        })
+      } catch (error) {
+        console.log('Error adding data')
+  }
+}
+
+export const deleteManyTodo = async(params)=>{
+      try {
+        return await axios.delete(apiUrl + `/deleteMany/${userData?.userId}/${params}`,{
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${userData?.jwt}`

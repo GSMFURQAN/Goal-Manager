@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
+  Badge,
   Box,
   Button,
+  MenuItem,
   Modal,
+  Select,
   Switch,
   TextField,
   Typography,
@@ -14,25 +17,32 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import moment from "moment/moment";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewTodo, getTodos, updateTodo } from "../../Apis/Apis";
+import {
+  addNewTodo,
+  getPreferences,
+  getTodos,
+  updateTodo,
+} from "../../Apis/Apis";
 import dayjs from "dayjs";
 import {
   LocalizationProvider,
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
 import { fetchData } from "../../redux/goalSlice";
-import { getProgress, selectSnack, selectView } from "../../redux/generalSlice";
+import { selectSnack, selectView } from "../../redux/generalSlice";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { uploadFile } from "../imageFolder/MediaUploader";
+import { getProgress } from "../../redux/donutSlice";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: { lg: "40vw", xs: "85vw" },
   bgcolor: "background.paper",
   border: "2px solid #000",
+  borderRadius:'12px',
   boxShadow: 24,
   p: 4,
 };
@@ -51,17 +61,20 @@ const VisuallyHiddenInput = styled("input")({
 const AddGoal = ({ open, setOpen, id, selectedDate }) => {
   const general = useSelector((state) => state.general);
   const { data, loading, error } = useSelector((state) => state.goal);
+  const { category } = useSelector((state) => state.tab);
   const [parentDate, setParentDate] = useState("");
-  const [fileUploadProgress, setFileUploadProgress] = useState(false)
-  const userData = JSON.parse(sessionStorage.getItem('account'))
+  const [fileUploadProgress, setFileUploadProgress] = useState(false);
+  const [tabs, setTabs] = useState([]);
+  const userData = JSON.parse(sessionStorage.getItem("account"));
 
   const [goalData, setGoalData] = React.useState({
     title: "",
     note: "",
-    dueDate: '',
+    dueDate: "",
     subTasks: [],
     major: false,
     image: "",
+    category: "",
   });
 
   const dispatch = useDispatch();
@@ -71,17 +84,33 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
       fetchIdData();
     }
   }, [id, dispatch]);
+
   React.useEffect(() => {
-    setGoalData({...goalData, dueDate: selectedDate ? dayjs(selectedDate) : dayjs()})
+    setGoalData({
+      ...goalData,
+      dueDate: selectedDate ? dayjs(selectedDate) : dayjs(),
+    });
   }, [id, dispatch, selectedDate]);
 
+  useEffect(() => {
+    getPreferences(userData?.userId).then((res) => {
+      let categories = res?.data[0]?.categories.sort((a, b) => a.id - b.id);
+      setTabs(categories);
+      //   categories.length >0 &&  upliftCategory(categories[value]?.id, categories[value]?.label)
+    });
+  }, []);
+
+  useEffect(() => {
+    setGoalData({ ...goalData, category: category.id });
+  }, [category]);
+
   const handleFileUpload = async (file) => {
-    setFileUploadProgress(true)
+    setFileUploadProgress(true);
     try {
       const downloadURL = await uploadFile(file);
       console.log("File uploaded successfully:", downloadURL);
       downloadURL && setGoalData({ ...goalData, image: downloadURL });
-      setFileUploadProgress(false)
+      setFileUploadProgress(false);
       // You can now use the downloadURL, e.g., set it in your state or send it to your backend
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -92,6 +121,8 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
       setGoalData({
         ...res.data[0],
         dueDate: dayjs(res?.data[0]?.dueDate),
+        category: res?.data[0]?.category?.id,
+
         // major: res.data[0]?.major
       });
       setParentDate(res?.data[0]?.dueDate);
@@ -126,7 +157,8 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
       viewed: "NO",
       major: goalData.major,
       image: goalData.image,
-      userId: userData?.userId
+      userId: userData?.userId,
+      category: tabs.filter((x) => x.id == goalData?.category)[0],
     };
     if (
       general.action == "subTask" &&
@@ -157,6 +189,10 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
       });
       setOpen(false);
     }
+    !loading &&
+      dispatch(
+        selectView({ ...general, id: "", action: "", addGoalOpen: false })
+      );
     setGoalData({});
     dispatch(getProgress({ dayView: general.dayView }));
   };
@@ -171,7 +207,9 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
         open={general.addGoalOpen}
         onClose={() => {
           setOpen(false);
-          dispatch(selectView({ ...general, id: "", action: "" , addGoalOpen:false}));
+          dispatch(
+            selectView({ ...general, id: "", action: "", addGoalOpen: false })
+          );
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -181,9 +219,25 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
             <DemoContainer components={["DateTimePicker"]}>
               <DemoItem label={"Add Goal"}>
                 <Stack display={"flex"} direction={"column"} spacing={2}>
+                  <Select
+                    size="small"
+                    style={{ marginTop: "9px" , color:'inherit'}}
+                    value={goalData.category}
+                    label="Category"
+                    onChange={(e) =>
+                      setGoalData({ ...goalData, category: e.target.value })
+                    }
+                  >
+                    {tabs.map((option) => (
+                      <MenuItem key={option.id} value={option.id}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
                   <TextField
                     label="Title"
                     type="text"
+                    size="small"
                     value={goalData.title}
                     onChange={(e) =>
                       setGoalData({ ...goalData, title: e.target.value })
@@ -191,7 +245,8 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
                   />
                   <TextField
                     multiline
-                    label="note"
+                    size="small"
+                    label="Note"
                     type="text"
                     value={goalData.note}
                     onChange={(e) =>
@@ -201,6 +256,7 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
 
                   <MobileDateTimePicker
                     label="Due Date"
+                    size="small"
                     sx={{ py: "12px" }}
                     value={goalData.dueDate}
                     onChange={(newValue) =>
@@ -209,32 +265,65 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
                   />
                   <Stack
                     display={"flex"}
-                    direction={"row"}
-                    justifyContent={"space-between"}
-                  >
+                    direction={{lg:'row', md:'row', xs:'column'}}
+                    spacing={{ xs: 2, lg: 8 }}
+                    >
+                   <Stack 
+                    display={"flex"}
+                    direction={'row'}>
+
                     <Button
+                      size="small"
                       component="label"
                       role={undefined}
                       variant="contained"
                       tabIndex={-1}
-                      // sx={{ width:'70%', paddingLeft:'12px' }}
+                      sx={{ fontSize: "12px" }}
+                      onChange={(e) => handleFileUpload(e.target.files[0])}
+                      startIcon={<CloudUploadIcon />}
+                      >
+                      Cover Photo
+                      <VisuallyHiddenInput type="file" />
+                    </Button>
+                    <Box>{' '}</Box>
+                    </Stack>
+                  <Stack
+                    display={"flex"}
+                    direction={'row'}
+                    spacing={2}
+                  >
+                    <Button
+                      size="small"
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      tabIndex={-1}
+                      sx={{ fontSize: "12px" }}
                       onChange={(e) => handleFileUpload(e.target.files[0])}
                       startIcon={<CloudUploadIcon />}
                     >
-                      Upload Image
+                      documents
                       <VisuallyHiddenInput type="file" />
                     </Button>
-                    <Box display={"flex"}>
-                      <Typography my={"auto"}>Major Goal</Typography>
-                      <Switch
-                        checked={goalData.major}
-                        onChange={() =>
-                          setGoalData({ ...goalData, major: !goalData.major })
-                        }
+                    <Badge color="secondary" badgeContent=" ">
+                      <Box
+                        component="span"
+                        sx={{ bgcolor: "primary.main", width: 40, height: 40 }}
                       />
-                    </Box>
+                    </Badge>
+                  </Stack>
                   </Stack>
                 </Stack>
+                <Box display={"flex"}>
+                  <Typography my={"auto"}>Major Goal</Typography>
+                  <Switch
+                    checked={goalData.major}
+                    onChange={() =>
+                      setGoalData({ ...goalData, major: !goalData.major })
+                    }
+                  />
+                </Box>
+                {/* </Stack> */}
 
                 <Stack
                   pt={2}
@@ -246,7 +335,14 @@ const AddGoal = ({ open, setOpen, id, selectedDate }) => {
                   <Button
                     variant="outlined"
                     onClick={() => {
-                      dispatch(selectView({ ...general, id: "", action: "", addGoalOpen:false }));
+                      dispatch(
+                        selectView({
+                          ...general,
+                          id: "",
+                          action: "",
+                          addGoalOpen: false,
+                        })
+                      );
                       setGoalData({});
                     }}
                     color="error"

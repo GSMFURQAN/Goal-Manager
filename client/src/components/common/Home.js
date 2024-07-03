@@ -7,6 +7,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useNavigate } from "react-router-dom";
 import NavbarButtons2 from "../ListGoals/NavbarButtons2";
 import PieChartData from "../PieChartData";
+import SemiDonut from "../SemiDonut";
+import EditableTabs from "./MyTabs";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -50,8 +52,9 @@ export default function Home({ progressView, setProgressView }) {
           }}
         >
           <NavbarButtons2 />
-          <MyList />
-          <PieChartData />
+          <EditableTabs/>
+          {/* <PieChartData /> */}
+          <SemiDonut/>
         </Stack>
         <Snackbar
           open={snack.open}

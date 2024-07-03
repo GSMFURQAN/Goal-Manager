@@ -8,9 +8,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProgress, selectView } from "../redux/generalSlice";
+import {  selectView } from "../redux/generalSlice";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useTheme } from "@mui/material/styles";
+import { getProgress } from "../redux/donutSlice";
 
 const PieChartData = () => {
   const general = useSelector((state) => state.general);
@@ -40,7 +41,7 @@ const PieChartData = () => {
   React.useMemo(() => {
     setProgressData({
       completed: completed,
-      incomplete: incomplete,
+      pending: incomplete,
       elapsed: elapsed,
     });
   }, [progress.data]);

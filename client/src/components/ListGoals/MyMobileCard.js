@@ -10,22 +10,26 @@ import moment from "moment";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchData } from "../../redux/goalSlice";
-import { getProgress, selectView } from "../../redux/generalSlice";
+import { selectView } from "../../redux/generalSlice";
 import { deleteTodo, updateTodo } from "../../Apis/Apis";
 import { showTime } from "../../utilities/utils";
 import LinearTimer from "../../utilities/LinearTimer";
+import { getProgress } from "../../redux/donutSlice";
 
 const MyMobileCard = ({ todo, general, open, setOpen }) => {
   const dispatch = useDispatch();
   const [selectedId, setSelectedId] = React.useState();
 
   const handleEditTodo = async (id) => {
-    dispatch(selectView({ ...general, id: id, action: "edit", addGoalOpen:true }));
+    dispatch(
+      selectView({ ...general, id: id, action: "edit", addGoalOpen: true })
+    );
   };
 
   const handleDeleteTodo = async (id) => {
     await deleteTodo(id).then(() => {
       dispatch(fetchData({ dayView: general.dayView }));
+      dispatch(getProgress({ dayView: general.dayView }));
     });
   };
   const handleChangeDone = async (id, done) => {
@@ -34,6 +38,18 @@ const MyMobileCard = ({ todo, general, open, setOpen }) => {
       dispatch(getProgress({ dayView: general.dayView }));
     });
   };
+  const handleAddNewTodo = () => {
+    dispatch(
+      selectView({
+        ...general,
+        addGoalOpen: true,
+        id: todo._id,
+        dueDate: todo.dueDate,
+        action: "subTask",
+      })
+    );
+  };
+
   return (
     <div>
       <Divider />
@@ -94,7 +110,7 @@ my={'auto'}                >
           {/* <Divider /> */}
 
           <Stack
-            width={{ xl: 600, lg: 600, md: 600, sm: 400, xs: 300 }}
+            width={{ xl: 600, lg: 520, md: 600, sm: 400, xs: 300 }}
             mt={0.5}
             sx={{}}
           >
@@ -149,17 +165,7 @@ my={'auto'}                >
                 <Button
                   size="small"
                   variant="text"
-                  onClick={() => {
-                    setOpen(true);
-                    dispatch(
-                      selectView({
-                        ...general,
-                        id: todo._id,
-                        dueDate: todo.dueDate,
-                        action: "subTask",
-                      })
-                    );
-                  }}
+                  onClick={() => handleAddNewTodo()}
                   sx={{ fontSize: "13px" }}
                 >
                   sub tasks

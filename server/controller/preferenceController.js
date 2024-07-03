@@ -27,3 +27,22 @@ export const getPreferences = async(req, res)=>{
         res.status(409).json({ message: error.message });
     }
 }
+
+export const updateMany = async (req, res) => {
+  const preference = req.body;
+  try {
+  const result =  await Preference.updateMany(
+      { userId: preference?.userId, 'categories.label': preference.oldValue },
+      { $set: { 'categories.$.label': preference?.newValue } }
+    );
+    res
+      .status(201)
+      .json({
+        message: `Matched ${result.matchedCount} documents and modified ${result.modifiedCount} documents.`,
+        newValue: preference?.newValue,
+      });
+  } catch (error) {
+    console.log("error saving the data in db", error);
+    res.status(409).json({ message: error.message });
+  }
+};

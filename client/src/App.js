@@ -17,6 +17,7 @@ import { useTheme } from "@mui/material/styles";
 import { GlobalStyles, Paper, styled, useMediaQuery } from "@mui/material";
 import MobileTimeLine from "./components/TimeLine/MobileTimeLine";
 import Navbar from "./components/common/Navbar";
+import EditableTabs from "./components/common/MyTabs";
 function App() {
   const generalState = useSelector((state) => state.general);
   const theme = useTheme();
@@ -75,6 +76,7 @@ function App() {
           <Navbar progressView={progressView} setProgressView={setProgressView}/>
           <Routes>
             <Route path="/" exact element={<Home progressView={progressView} setProgressView={setProgressView}/>} />
+            {/* <Route path="/" exact element={<EditableTabs />} /> */}
             <Route path="/calendar" exact element={<CalendarPage />} />
             <Route
               path="/timeLine"

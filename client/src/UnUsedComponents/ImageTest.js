@@ -85,7 +85,6 @@ function ImageTest() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('mio',inputs)
     // try {
     //   await axios.post(`http://localhost:8000/api/videos`, { ...inputs });
     //   window.location.reload();

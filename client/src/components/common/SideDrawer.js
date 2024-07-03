@@ -36,7 +36,6 @@ export default function SideDrawer({
       <Stack display={"flex"} direction={"column"} spacing={4} my={8} mx={5}>
         <Button
           size="small"
-          fullWidth
           variant={general.dayView === "previous" ? "contained" : "outlined"}
           onClick={() =>
             dispatch(selectView({ ...general, dayView: "previous" }))
@@ -46,7 +45,6 @@ export default function SideDrawer({
         </Button>{" "}
         <Button
           size="small"
-          fullWidth="12px"
           variant={general.dayView === "day" ? "contained" : "outlined"}
           onClick={() => dispatch(selectView({ ...general, dayView: "day" }))}
         >
@@ -54,7 +52,6 @@ export default function SideDrawer({
         </Button>{" "}
         <Button
           size="small"
-          fullWidth="12px"
           variant={general.dayView === "tomorrow" ? "contained" : "outlined"}
           onClick={() =>
             dispatch(selectView({ ...general, dayView: "tomorrow" }))
@@ -64,7 +61,6 @@ export default function SideDrawer({
         </Button>{" "}
         <Button
           size="small"
-          fullWidth="12px"
           variant={general.dayView === "future" ? "contained" : "outlined"}
           onClick={() =>
             dispatch(selectView({ ...general, dayView: "future" }))
@@ -74,7 +70,6 @@ export default function SideDrawer({
         </Button>{" "}
         <Button
           size="small"
-          fullWidth="12px"
           variant={general.dayView === "all" ? "contained" : "outlined"}
           onClick={() => dispatch(selectView({ ...general, dayView: "all" }))}
         >
@@ -85,7 +80,6 @@ export default function SideDrawer({
             size="small"
             variant="contained"
             color="success"
-            fullWidth="12px"
             px={0}
             onClick={() => {
               handleAddNewTodo();

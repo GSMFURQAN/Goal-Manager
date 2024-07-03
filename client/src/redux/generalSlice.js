@@ -16,6 +16,8 @@ const generalSlice = createSlice({
     bgImg: "",
     addGoalOpen: false,
     progressOpen: true,
+    // category:{id:null,label:''},
+    category:null,
   },
   reducers: {
     selectView: (state, payload) => {
@@ -27,6 +29,8 @@ const generalSlice = createSlice({
       state.bgImg = payload.payload.bgImg;
       state.addGoalOpen = payload.payload.addGoalOpen;
       state.progressOpen = payload.payload.progressOpen;
+      state.category = payload.payload.category;
+      // state.category.label = payload.payload.category.label;
     },
   },
 });
@@ -42,48 +46,12 @@ const snackSlice = createSlice({
   },
 });
 
-export const getProgress = (params) => async (dispatch) => {
-  dispatch(fetchDataStart());
-  try {
-    const headers = userData.jwt && {
-      Authorization: `Bearer ${userData?.jwt}`,
-    };
-    const response = await axios.get(
-      apiUrl + `/progress?dayView=${params.dayView}&userId=${userData?.userId}`,
-      { headers }
-    );
-    dispatch(fetchDataSuccess(response.data));
-  } catch (error) {
-    console.log("Error fetching data");
-    dispatch(fetchDataFailure(error.message));
-  }
-};
 
-const progressSlice = createSlice({
-  name: "progress",
-  initialState: { data: null, loading: false, error: null },
-  reducers: {
-    fetchDataStart(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    fetchDataSuccess(state, action) {
-      state.loading = false;
-      state.data = action.payload;
-    },
-    fetchDataFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-  },
-});
 
 export const { selectView } = generalSlice.actions;
 export const { selectSnack } = snackSlice.actions;
-export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } =
-  progressSlice.actions;
+
 export const reducers = {
-  progressSlice: progressSlice.reducer,
   generalSlice: generalSlice.reducer,
   snackSlice: snackSlice.reducer,
 };

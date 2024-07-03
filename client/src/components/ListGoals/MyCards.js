@@ -10,10 +10,11 @@ import moment from "moment";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchData } from "../../redux/goalSlice";
-import { getProgress, selectView } from "../../redux/generalSlice";
+import {  selectView } from "../../redux/generalSlice";
 import { deleteTodo, updateTodo } from "../../Apis/Apis";
 import { showTime } from "../../utilities/utils";
 import LinearTimer from "../../utilities/LinearTimer";
+import { getProgress } from "../../redux/donutSlice";
 
 const MyCards = ({ todo, general, open, setOpen }) => {
   const dispatch = useDispatch();

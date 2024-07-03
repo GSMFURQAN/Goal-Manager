@@ -124,9 +124,16 @@ export default function Navbar({progressView,setProgressView}) {
       <MenuItem>
         <IconButton
           onClick={() =>
+            {
             dispatch(
               selectView({ ...general, theme: !general.theme, bgImg: " " })
             )
+            savePreferences({
+              userId: account?.userId,
+              bgImg: general.theme,
+            })
+            sessionStorage.setItem('account', JSON.stringify({...account, bgImg:general.theme}) )
+          }
           }
           color="inherit"
         >

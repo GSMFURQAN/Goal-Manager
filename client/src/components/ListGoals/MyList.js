@@ -24,22 +24,24 @@ import MyMobileCard from "./MyMobileCard";
 const MyCard = () => {
   const [open, setOpen] = React.useState(false);
   const general = useSelector((state) => state.general);
+  const {category} = useSelector((state) => state.tab);
   const { data, loading, error } = useSelector((state) => state.goal);
+
   const dispatch = useDispatch();
   
   useEffect(() => {
     dispatch(fetchData({ dayView: general?.dayView}));
-  }, [ general.dayView]);
-
+  }, [ general.dayView, category ]);
+  
   return (
-    <Stack sx={{ width: {lg:"75%", xs:'100%'} , border:'2px solid gray', borderRadius:'12px', margin:'8px 0px'}}>
-      <Stack my={1} px={1} sx={{ overflowY: "auto", maxHeight: '68vh' }}>
+    <Stack sx={{ width: {lg:"100%", xs:'100%'} , border:'2px solid gray', borderRadius:'12px', margin:'8px 0px'}}>
+      <Stack my={1} px={1} sx={{ overflowY: "auto", maxHeight: '64vh' }}>
         {loading ? (
           <Stack m={'auto'}>
           <CircularProgress />
             </Stack> 
         ) : (
-          data?.filter((x) => x.parentId == "")
+          data?.filter((x) => x?.parentId == "" && x.category?.id == category?.id)
             .map((todo) => (
               <>
                 <MyMobileCard

@@ -39,7 +39,6 @@ CircularProgressWithLabel.propTypes = {
 };
 
 export default function Timer({ daysLeft }) {
-  console.log("dde", daysLeft);
   const [progress, setProgress] = React.useState(daysLeft + 0);
 
   React.useEffect(() => {

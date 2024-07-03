@@ -69,8 +69,7 @@ const dispatch = useDispatch()
             size="small"
             variant="contained"
             color="success"
-            fullWidth="12px"
-            px={0}
+             px={0}
             onClick={() => {
               handleAddNewTodo();
             }}
@@ -80,8 +79,7 @@ const dispatch = useDispatch()
             <Button
               variant="contained"
               color="info"
-              fullWidth="12px"
-              onClick={() => {
+                 onClick={() => {
                 setProgressView(!progressView);
               }}
             >
