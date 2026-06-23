@@ -50,7 +50,7 @@ router.delete("/delete-todo/:userId/:id",verifyToken, deleteTodo);
 router.delete("/deleteMany/:userId/:keyword",verifyToken, deleteManyTodo);
 router.post("/add-todo",verifyToken, upload.single("image"), addNewTodo);
 router.post('/register', [body('email').isEmail(),body('password','Password too small').isLength({min:5})], RegisterUser)
-router.post('/login',[body('email').isEmail(),body('password','Password too small').isLength({min:5})], loginUser)
+router.post('/login',[body('email').isEmail(),body('password','Password too small').isLength({min:3})], loginUser)
 router.put("/update-todo",verifyToken, upload.single('image'), updateTodo);
 router.put("/preferences",verifyToken, addPreferences);
 router.put("/update-many",verifyToken, updateMany);

@@ -172,7 +172,7 @@ const AddGoal = ({ id, selectedDate }) => {
       major: goalData.major,
       image: goalData.image,
       userId: userData?.userId,
-      category: tabs.filter((x) => x.id == goalData?.category)[0],
+      category: tabs?.filter((x) => x?.id == goalData?.category)[0],
       docs: goalData.docs,
     };
     if (
@@ -232,15 +232,15 @@ const AddGoal = ({ id, selectedDate }) => {
                   <Select
                     size="small"
                     style={{ marginTop: "9px" , color:'inherit'}}
-                    value={goalData.category}
+                    value={goalData?.category}
                     label="Category"
                     onChange={(e) =>
-                      setGoalData({ ...goalData, category: e.target.value })
+                      setGoalData({ ...goalData, category: e?.target?.value })
                     }
                   >
-                    {tabs.map((option) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.label}
+                    {tabs?.map((option) => (
+                      <MenuItem key={option?.id} value={option?.id}>
+                        {option?.label}
                       </MenuItem>
                     ))}
                   </Select>
@@ -248,9 +248,9 @@ const AddGoal = ({ id, selectedDate }) => {
                     label="Title"
                     type="text"
                     size="small"
-                    value={goalData.title}
+                    value={goalData?.title}
                     onChange={(e) =>
-                      setGoalData({ ...goalData, title: e.target.value })
+                      setGoalData({ ...goalData, title: e?.target?.value })
                     }
                   />
                   <TextField
@@ -258,9 +258,9 @@ const AddGoal = ({ id, selectedDate }) => {
                     size="small"
                     label="Note"
                     type="text"
-                    value={goalData.note}
+                    value={goalData?.note}
                     onChange={(e) =>
-                      setGoalData({ ...goalData, note: e.target.value })
+                      setGoalData({ ...goalData, note: e?.target?.value })
                     }
                   />
 
@@ -268,7 +268,7 @@ const AddGoal = ({ id, selectedDate }) => {
                     label="Due Date"
                     size="small"
                     sx={{ py: "12px" }}
-                    value={goalData.dueDate}
+                    value={goalData?.dueDate}
                     onChange={(newValue) =>
                       setGoalData({ ...goalData, dueDate: newValue.$d })
                     }

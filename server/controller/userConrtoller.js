@@ -13,7 +13,7 @@ export const fetchAccount = async (req, res) => {
     res.status(201).json(users);
   } catch (error) {
     res.status(409).json({ message: error });
-    console.log("error fetching the data in db");
+    console.log("error fetching the data in db",error);
   }
 };
 
@@ -68,11 +68,14 @@ export const loginUser = async (req, res) => {
       const userPref = await Preference.findOne({userId:existingUser?.userId})
       const data = { user: { id: existingUser.id } };
       const authToken = jwt.sign(data, jwtSecret, {expiresIn:'1d'});
-      const userData = {name : existingUser.name, email:existingUser.email, jwt: authToken, userId:existingUser.userId, bgImg:userPref.bgImg}
+      const userData = {name : existingUser.name, email:existingUser.email, jwt: authToken, userId:existingUser.userId}
       return res.json({status:201, success: true, userData });
     } catch (error) {
-      res.status(409).json({ message: error });
-      console.log("error fetching the data in db");
+       console.error("LOGIN ERROR:", error);
+  res.status(500).json({
+    success: false,
+    error: error.message
+  });
     }
   } else {
     res.status(409).json({ error: "fields are missing" });

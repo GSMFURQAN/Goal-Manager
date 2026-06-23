@@ -102,7 +102,7 @@ useEffect( () => {
       >
         {tabs?.map((tab, index) => (
           <Tab
-            key={tab?.id}
+            // key={tab?.id || ''}
             // onClick={() => handlex(tab.id)}
             label={
               <Stack display="flex" direction={"row"} spacing={2}>
@@ -132,7 +132,7 @@ useEffect( () => {
             }
           />
         ))}
-        {tabs.length < 4 && (
+        {tabs?.length < 4 && (
           <IconButton sx={{ mx: "12px", color: "inherit" }} onClick={addTab}>
             <AddIcon />
           </IconButton>
